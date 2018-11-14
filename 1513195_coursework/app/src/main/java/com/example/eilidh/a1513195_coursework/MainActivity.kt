@@ -1,6 +1,7 @@
 package com.example.eilidh.a1513195_coursework
 
 import android.app.DownloadManager
+import android.arch.persistence.room.Room
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -31,6 +32,11 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val db = Room.databaseBuilder(
+                applicationContext,
+                Database::class.java, "weather-database"
+        ).build()
 
     }
 
