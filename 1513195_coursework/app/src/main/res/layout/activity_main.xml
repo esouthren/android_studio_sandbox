@@ -18,6 +18,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="@string/str_update_api" />
+        tools:text="@string/str_update_api"
+        android:onClick="callApi"/>
 
 </android.support.constraint.ConstraintLayout>
