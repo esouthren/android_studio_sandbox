@@ -20,6 +20,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 
+
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
 
@@ -33,10 +34,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val db = Room.databaseBuilder(
-                applicationContext,
-                Database::class.java, "weather-database"
-        ).build()
+
+
+
 
     }
 
@@ -75,6 +75,12 @@ class MainActivity : AppCompatActivity() {
         Log.i(TAG, "TimeZone: " +  mine.timezone)
         Log.i(TAG, "Hourly summary: " + mine.hourly.summary)
         Log.i(TAG, "length of hours array: " + mine.hourly.data.size)
+        val fb = FillDatabase()
+        fb.helloWorld(TAG)
+
+        // uncommenting this function causing app to crash :/
+        // todo: go through lab!
+        //fb.addDataToDatabase(data, mDbWorkerThread)
 
     }
 
