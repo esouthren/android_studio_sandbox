@@ -7,10 +7,6 @@ import org.json.JSONObject
 
 class FillDatabase() {
 
-    val db = Room.databaseBuilder(,
-            Database::class.java, "weather-database"
-    ).build()
-
     fun helloWorld(tag: String) {
         Log.i(tag, "Hello!")
     }
