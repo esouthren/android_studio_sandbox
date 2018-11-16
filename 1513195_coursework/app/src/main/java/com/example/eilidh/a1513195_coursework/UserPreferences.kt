@@ -20,43 +20,53 @@ import android.widget.TextView
 
 class Prefs (context: Context) {
     val PREFS_FILENAME = "user_preferences"
-    val BACKGROUND_COLOR = "background_color"
+    // array of 0 - 9 to store user preferences
+    val PREFERENCES = Array(10, { i -> (i + 1).toString() })
     val prefs: SharedPreferences = context.getSharedPreferences(PREFS_FILENAME, 0);
 
-    var bgColor: String
-        get() = prefs.getString(BACKGROUND_COLOR, "test")
-        set(value) = prefs.edit().putString(BACKGROUND_COLOR, value).apply()
+    fun setPref(index: Int, value: String) {
+        prefs.edit().putString(PREFERENCES[index], value).apply()
+    }
+
+    fun getPref(index: Int): String {
+        return prefs.getString(PREFERENCES[index], "huh?")
+    }
+    fun clear() {
+        prefs.edit().clear()
+        // add 'preferences cleared' toast?
+    }
 }
 
 class UserPreferences : AppCompatActivity() {
 
     var prefs: Prefs? = null
-
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.user_preferences)
         prefs = Prefs(this)
-        val bgColor = prefs!!.bgColor
+        var userPrefTextView = arrayOfNulls<String>(10)
         displayUserPreferences()
+
+        // create text view references
+        for (i in 0..9) {
+            userPrefTextView[i] = "R.id.user_pref_" + i.toString()
+        }
     }
 
     fun displayUserPreferences() {
         // load user preferences and display
-        val textView: TextView = findViewById(R.id.user_pref_test) as TextView
-        textView.text = prefs!!.bgColor
+        val textView: TextView = findViewById(R.id.user_pref_1) as TextView
+        textView.text = prefs!!.getPref(0)
         Log.i("debug", "displaying user preferences" )
 
 
     }
 
     fun updateUserPreferences(view: View) {
-        val b: TextView = findViewById(R.id.input_test) as TextView
-        prefs!!.bgColor = b.text.toString()
+        val b: TextView = findViewById(R.id.user_pref_1) as TextView
+        prefs!!.setPref(1, b.text.toString())
         displayUserPreferences()
-        Log.i("debug", prefs!!.bgColor)
+        Log.i("debug", prefs!!.getPref(1))
     }
 }
