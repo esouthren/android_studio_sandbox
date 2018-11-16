@@ -77,4 +77,5 @@
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="str_toolbar_title">Here Comes the Sun</string>
     <string name="title">Here Comes the Sun</string>
+    <string name="file_user_preferences">file_user_preferences</string>
 </resources>

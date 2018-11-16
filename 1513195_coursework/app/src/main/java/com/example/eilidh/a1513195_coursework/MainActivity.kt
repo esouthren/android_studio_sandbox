@@ -3,6 +3,7 @@ package com.example.eilidh.a1513195_coursework
 import android.app.DownloadManager
 import android.arch.persistence.room.Room
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat.startActivity
@@ -29,14 +30,11 @@ class MainActivity : AppCompatActivity() {
     val TAG = "debug"
     val APIKEY = "bd233fef7ea7953a843bbbb58fc087ba"
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
-
-
 
     }
 
