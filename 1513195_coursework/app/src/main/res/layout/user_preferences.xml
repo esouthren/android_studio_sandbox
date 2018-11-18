@@ -6,8 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <EditText
         android:id="@+id/user_pref_4"
+        android:ems="10"
+        android:inputType="textPersonName"
         android:layout_width="293dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
@@ -18,8 +20,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_pref_3" />
 
-    <TextView
+    <EditText
         android:id="@+id/user_pref_5"
+        android:ems="10"
+        android:inputType="textPersonName"
         android:layout_width="293dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
@@ -30,8 +34,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_pref_4" />
 
-    <TextView
+    <EditText
         android:id="@+id/user_pref_6"
+        android:ems="10"
+        android:inputType="textPersonName"
         android:layout_width="293dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
@@ -42,8 +48,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_pref_5" />
 
-    <TextView
+    <EditText
         android:id="@+id/user_pref_7"
+        android:ems="10"
+        android:inputType="textPersonName"
         android:layout_width="293dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
@@ -58,30 +66,36 @@
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:onClick="updateUserPreferences"
         android:text="Button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
+    <EditText
         android:id="@+id/user_pref_1"
         android:layout_width="293dp"
         android:layout_height="35dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="25dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="57dp"
         android:autofillHints="@color/themeOrange"
         android:background="@color/themeOrange"
         android:backgroundTint="@color/themeOrange"
+        android:ems="10"
+        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
-    <TextView
+    <EditText
         android:id="@+id/user_pref_2"
+        android:ems="10"
+        android:inputType="textPersonName"
         android:layout_width="293dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
@@ -92,9 +106,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_pref_1" />
 
-    <TextView
+    <EditText
         android:id="@+id/user_pref_3"
         android:layout_width="293dp"
+        android:ems="10"
+        android:inputType="textPersonName"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -104,10 +120,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_pref_2" />
 
-    <TextView
+    <EditText
         android:id="@+id/user_pref_8"
         android:layout_width="293dp"
         android:layout_height="35dp"
+        android:ems="10"
+        android:inputType="textPersonName"
         android:layout_marginStart="8dp"
         android:layout_marginTop="6dp"
         android:layout_marginEnd="8dp"
@@ -116,9 +134,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_pref_7" />
 
-    <TextView
+    <EditText
         android:id="@+id/user_pref_9"
         android:layout_width="293dp"
+        android:ems="10"
+        android:inputType="textPersonName"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="6dp"
@@ -128,8 +148,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_pref_8" />
 
-    <TextView
+    <EditText
+        android:id="@+id/user_pref_10"
+        android:layout_width="293dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@color/themeOrange"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_pref_9" />
+
+    <EditText
         android:id="@+id/textView4"
+        android:ems="10"
+        android:inputType="textPersonName"
         android:layout_width="wrap_content"
         android:layout_height="17dp"
         android:layout_marginStart="8dp"
@@ -140,4 +177,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_add_pref"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="addPreferenceEditBox"
+        android:text="Add City"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_pref_10" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:onClick="deleteAllPreferences"
+        android:text="Delete All"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_add_pref"
+        tools:layout_editor_absoluteY="463dp" />
+
 </android.support.constraint.ConstraintLayout>
