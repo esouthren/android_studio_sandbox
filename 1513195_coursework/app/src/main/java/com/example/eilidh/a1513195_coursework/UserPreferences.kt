@@ -21,6 +21,7 @@ import android.widget.TextView
 import com.example.eilidh.a1513195_coursework.R.id.none
 
 
+//todo: add delete icon to each option choice
 
 class Prefs (context: Context) {
     val PREFS_FILENAME = "user_preferences"
@@ -60,6 +61,7 @@ class UserPreferences : AppCompatActivity() {
             R.id.user_pref_10)
 
     var prefs: Prefs? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
@@ -71,50 +73,30 @@ class UserPreferences : AppCompatActivity() {
     fun displayUserPreferences() {
         // load user preferences and display
         var boxIndex = 0
-
-
         for(prefIndex in 0..9) {
             findViewById<EditText>(editTextIds[prefIndex]).visibility = View.INVISIBLE
-            Log.i("debug", "pref " + prefIndex + ": " + prefs!!.getPref(prefIndex).length.toString() )
             val editText: EditText = findViewById<EditText>(editTextIds[boxIndex])
             editText.setText(prefs?.getPref(prefIndex))
+
             if(prefs!!.getPref(prefIndex).length > 1) {
-                //Log.i("debug", "contains text!" + prefs!!.getPref(i))
                 editText.setText(prefs!!.getPref(prefIndex))
-                Log.i("debug", "setting visible")
                 editText.visibility = View.VISIBLE
                 boxIndex++
             }
-
-
         }
         // make box 1 visible always
         findViewById<EditText>(editTextIds[0]).visibility = View.VISIBLE
-
-
-
-        //editText.text = prefs!!.getPref(0)
-        Log.i("debug", "displaying user preferences" )
-        //removeUnusedEditTexts()
-
     }
 
     fun updateUserPreferences(view: View) {
-
-
         for(editIndex in 0..9) {
             val editText: EditText = findViewById<EditText>(editTextIds[editIndex])
             if (editText.text.toString().length > 1) {
-                Log.i("debug", "value of textbox: " + editText.text.toString().length.toString())
                 prefs?.setPref(editIndex, editText.text.toString())
-                Log.i("debug", "setting preference: " + editIndex + " - " + prefs!!.getPref(editIndex))
             }
         }
         displayUserPreferences()
-
     }
-
-
 
     fun deletePreference() {
         // update the order of preferences if , say, 2nd preference of 3 is deleted
@@ -133,12 +115,10 @@ class UserPreferences : AppCompatActivity() {
     }
 
     fun deleteAllPreferences(view: View) {
-        Log.i("debug", "Deleting all preferences")
         prefs!!.clear()
         for(i in 0..9) {
             val editText: EditText = findViewById<EditText>(editTextIds[i])
             editText.setText("")
-            Log.i("debug", "deleted pref: " + prefs!!.getPref(i))
         }
         displayUserPreferences()
     }
