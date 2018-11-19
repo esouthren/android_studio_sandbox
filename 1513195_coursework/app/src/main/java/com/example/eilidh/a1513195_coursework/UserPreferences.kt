@@ -1,53 +1,60 @@
 package com.example.eilidh.a1513195_coursework
 
-import android.app.PendingIntent.getActivity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import android.view.Window
 
-import kotlinx.android.synthetic.main.activity_main.*
-import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import android.graphics.Color
+import android.os.Handler
+import android.os.Message
 import android.util.Log
 import android.widget.EditText
-import android.widget.TextView
-import com.example.eilidh.a1513195_coursework.R.id.none
+import javax.security.auth.callback.Callback
 
 
 //todo: add delete icon to each option choice
 
-class Prefs (context: Context) {
+
+
+class Prefs (context: Context)  {
     val PREFS_FILENAME = "user_preferences"
     // array of 0 - 9 to store user preferences
     val PREFERENCES = Array(10, { i -> (i + 1).toString() })
+    // stores preferences' lat/long
+    val PREFERENCES_LAT_LONG = Array(10, { i -> ((i + 1).toString()+"_LATLONG") })
+
 
     val preferences: SharedPreferences = context.getSharedPreferences(PREFS_FILENAME, 0);
 
-    fun setPref(index: Int, value: String) {
+    fun setPrefAddress(index: Int, value: String) {
         this.preferences.edit().putString(PREFERENCES[index], value).apply()
     }
 
-    fun getPref(index: Int): String {
+    fun getPrefAddress(index: Int): String {
         return this.preferences.getString(PREFERENCES[index], "")
-
     }
+
+    fun setPrefLatLong(index: Int, value: String) {
+        this.preferences.edit().putString(PREFERENCES_LAT_LONG[index], value).apply()
+    }
+
+    fun getPrefLatLong(index: Int): String {
+        return this.preferences.getString(PREFERENCES_LAT_LONG[index], "")
+    }
+
+
     fun clear() {
         for(i in 0..9) {
             this.preferences.edit().putString(PREFERENCES[i], " ").apply()
+            this.preferences.edit().putString(PREFERENCES_LAT_LONG[i], " ").apply()
         }
         // add 'preferences cleared' toast?
     }
 
 }
 
-class UserPreferences : AppCompatActivity() {
+class UserPreferences : AppCompatActivity(), Callback {
 
     var editTextIds = arrayOf(R.id.user_pref_1,
             R.id.user_pref_2,
@@ -68,6 +75,7 @@ class UserPreferences : AppCompatActivity() {
         setContentView(R.layout.user_preferences)
         prefs = Prefs(this)
         displayUserPreferences()
+
     }
 
     fun displayUserPreferences() {
@@ -76,10 +84,10 @@ class UserPreferences : AppCompatActivity() {
         for(prefIndex in 0..9) {
             findViewById<EditText>(editTextIds[prefIndex]).visibility = View.INVISIBLE
             val editText: EditText = findViewById<EditText>(editTextIds[boxIndex])
-            editText.setText(prefs?.getPref(prefIndex))
+            editText.setText(prefs?.getPrefAddress(prefIndex))
 
-            if(prefs!!.getPref(prefIndex).length > 1) {
-                editText.setText(prefs!!.getPref(prefIndex))
+            if(prefs!!.getPrefAddress(prefIndex).length > 1) {
+                editText.setText(prefs!!.getPrefAddress(prefIndex))
                 editText.visibility = View.VISIBLE
                 boxIndex++
             }
@@ -91,8 +99,10 @@ class UserPreferences : AppCompatActivity() {
     fun updateUserPreferences(view: View) {
         for(editIndex in 0..9) {
             val editText: EditText = findViewById<EditText>(editTextIds[editIndex])
-            if (editText.text.toString().length > 1) {
-                prefs?.setPref(editIndex, editText.text.toString())
+            val currentText = editText.text.toString()
+            if (currentText.length > 1) {
+                getLatLong(currentText, 1, prefs!!)
+                prefs?.setPrefAddress(editIndex, editText.text.toString())
             }
         }
         displayUserPreferences()
@@ -107,7 +117,7 @@ class UserPreferences : AppCompatActivity() {
         updateUserPreferences(view)
         for (i in 0..9) {
             val editText: EditText = findViewById<EditText>(editTextIds[i])
-                if (prefs!!.getPref(i).length <= 1) {
+                if (prefs!!.getPrefAddress(i).length <= 1) {
                     editText.visibility = View.VISIBLE
                     break
                 }
@@ -122,4 +132,43 @@ class UserPreferences : AppCompatActivity() {
         }
         displayUserPreferences()
     }
+
+    fun getLatLong(address: String, index: Int, prefs: Prefs) {
+        val locationAddress = GeocodingLocation()
+        val handler = GeocoderHandler()
+        locationAddress.getAddressFromLocation(address,
+                applicationContext, handler, index, prefs)
+        val meep = handler.rick
+        Log.i("debug", "BLORK!!" + meep)
+
+    }
 }
+
+// Handler for Geocoding conversions
+class GeocoderHandler : Handler() {
+
+    var rick = ""
+
+    override fun handleMessage(message: Message) {
+        var locationAddress = ""
+        //Log.i("debug", "raw: " + message.data.getString("address"))
+        locationAddress = message.getData().getString("address")
+
+        //Log.i("debug", "handlemessage address: $locationAddress")
+        if(locationAddress.equals("error")) {
+                    Log.i("debug", "Error!")
+                    //todo Handle incorrect address - do not add to preferences and display error message to user
+                }
+        else {
+            //Log.i("debug", "handlemessage unsplit address: $locationAddress)")
+
+            //val lat = latLong[0]
+            //val long = latLong[1]
+            //Log.i("debug", "handlemessage address: $lat")
+
+        }
+        rick = locationAddress
+        Log.i("debug", rick)
+    }
+}
+

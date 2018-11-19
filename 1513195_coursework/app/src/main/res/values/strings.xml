@@ -78,4 +78,5 @@
     <string name="str_toolbar_title">Here Comes the Sun</string>
     <string name="title">Here Comes the Sun</string>
     <string name="file_user_preferences">file_user_preferences</string>
+    <string name="geolocation_api_key">pk.eyJ1IjoiZXNvdXRocmVuIiwiYSI6ImNqb25qZXowOTB3Y24zcHJ5OXVrYnh3enAifQ.SVjlOPcB76-zFNDYGp4ePQ</string>
 </resources>
