@@ -18,7 +18,8 @@ class GeocodingLocation {
 
 
     fun getAddressFromLocation(locationAddress: String,
-                               context: Context, handler: Handler, prefIndex: Int, prefs: Prefs) {
+                               context: Context, prefIndex: Int, prefs: Prefs) {
+        Log.i("debug", "Starting to find lat/long...")
         val thread = object : Thread() {
             override fun run() {
                 val geocoder = Geocoder(context, Locale.getDefault())
@@ -35,22 +36,15 @@ class GeocodingLocation {
                 } catch (e: IOException) {
                     Log.e(TAG, "Unable to connect to Geocoder", e)
                 } finally {
-                    val message = Message.obtain()
-                    message.target = handler
-                    message.what = 1
-                    val bundle = Bundle()
-                    if (result != null) {
 
-                        bundle.putString("address", result)
+                    if (result != null) {
+                        // set preference
                         prefs.setPrefLatLong(prefIndex, result)
                         Log.i("debug", "setting new latlong: " + prefIndex + " \t" + prefs!!.getPrefLatLong(prefIndex))
 
                     } else {
-                        bundle.putString("address", "error")
+                        // todo what do when lat/long fails
                     }
-                    message.data = bundle
-                    message.sendToTarget()
-
 
                 }
             }

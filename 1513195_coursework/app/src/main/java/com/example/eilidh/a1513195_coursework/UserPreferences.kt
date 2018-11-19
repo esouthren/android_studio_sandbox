@@ -15,8 +15,6 @@ import javax.security.auth.callback.Callback
 
 //todo: add delete icon to each option choice
 
-
-
 class Prefs (context: Context)  {
     val PREFS_FILENAME = "user_preferences"
     // array of 0 - 9 to store user preferences
@@ -51,7 +49,6 @@ class Prefs (context: Context)  {
         }
         // add 'preferences cleared' toast?
     }
-
 }
 
 class UserPreferences : AppCompatActivity(), Callback {
@@ -87,6 +84,8 @@ class UserPreferences : AppCompatActivity(), Callback {
             editText.setText(prefs?.getPrefAddress(prefIndex))
 
             if(prefs!!.getPrefAddress(prefIndex).length > 1) {
+                Log.i("debug", "display prefs: " + prefs!!.getPrefAddress(prefIndex))
+
                 editText.setText(prefs!!.getPrefAddress(prefIndex))
                 editText.visibility = View.VISIBLE
                 boxIndex++
@@ -96,28 +95,33 @@ class UserPreferences : AppCompatActivity(), Callback {
         findViewById<EditText>(editTextIds[0]).visibility = View.VISIBLE
     }
 
-    fun updateUserPreferences(view: View) {
+    fun updatePreferences(view: View) {
         for(editIndex in 0..9) {
             val editText: EditText = findViewById<EditText>(editTextIds[editIndex])
             val currentText = editText.text.toString()
             if (currentText.length > 1) {
-                getLatLong(currentText, 1, prefs!!)
-                prefs?.setPrefAddress(editIndex, editText.text.toString())
+                Log.i("debug", "found a value!")
+                prefs!!.setPrefAddress(editIndex, currentText)
+                // latlong is set from within thread
+                getLatLong(currentText, editIndex, prefs!!)
+            } else {
+                prefs!!.setPrefAddress(editIndex, "")
+                prefs!!.setPrefLatLong(editIndex, "")
             }
         }
-        displayUserPreferences()
+        //displayUserPreferences()
     }
 
     fun deletePreference() {
         // update the order of preferences if , say, 2nd preference of 3 is deleted
-
     }
 
     fun addPreferenceEditBox(view: View) {
-        updateUserPreferences(view)
+        Log.i("debug", "Adding preference box")
+        //updatePreferences(view)
         for (i in 0..9) {
             val editText: EditText = findViewById<EditText>(editTextIds[i])
-                if (prefs!!.getPrefAddress(i).length <= 1) {
+                if (editText.text.toString().length <= 1) {
                     editText.visibility = View.VISIBLE
                     break
                 }
@@ -129,46 +133,14 @@ class UserPreferences : AppCompatActivity(), Callback {
         for(i in 0..9) {
             val editText: EditText = findViewById<EditText>(editTextIds[i])
             editText.setText("")
+            prefs!!.setPrefLatLong(i, "")
         }
         displayUserPreferences()
     }
 
     fun getLatLong(address: String, index: Int, prefs: Prefs) {
         val locationAddress = GeocodingLocation()
-        val handler = GeocoderHandler()
         locationAddress.getAddressFromLocation(address,
-                applicationContext, handler, index, prefs)
-        val meep = handler.rick
-        Log.i("debug", "BLORK!!" + meep)
-
+                applicationContext, index, prefs)
     }
 }
-
-// Handler for Geocoding conversions
-class GeocoderHandler : Handler() {
-
-    var rick = ""
-
-    override fun handleMessage(message: Message) {
-        var locationAddress = ""
-        //Log.i("debug", "raw: " + message.data.getString("address"))
-        locationAddress = message.getData().getString("address")
-
-        //Log.i("debug", "handlemessage address: $locationAddress")
-        if(locationAddress.equals("error")) {
-                    Log.i("debug", "Error!")
-                    //todo Handle incorrect address - do not add to preferences and display error message to user
-                }
-        else {
-            //Log.i("debug", "handlemessage unsplit address: $locationAddress)")
-
-            //val lat = latLong[0]
-            //val long = latLong[1]
-            //Log.i("debug", "handlemessage address: $lat")
-
-        }
-        rick = locationAddress
-        Log.i("debug", rick)
-    }
-}
-
