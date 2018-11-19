@@ -20,6 +20,8 @@ class MainActivity : AppCompatActivity() {
     val TAG = "debug"
     val APIKEY = "bd233fef7ea7953a843bbbb58fc087ba"
     var prefs: Prefs? = null
+    private lateinit var mDbWorkerThread: DbWorkerThread
+    private var mDb: WeatherDatabase? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,6 +29,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         prefs = Prefs(this)
+        mDbWorkerThread = DbWorkerThread("dbWorkerThread")
+        mDbWorkerThread.start()
+        mDb = WeatherDatabase.getInstance(this)
         displayDbData()
 
     }
@@ -65,12 +70,11 @@ class MainActivity : AppCompatActivity() {
 
         //Log.i(TAG, "Hourly summary: " + parsedApiData.hourly.summary)
         //Log.i(TAG, "length of hours array: " + parsedApiData.hourly.data.size)
-        val fb = FillDatabase()
-        fb.helloWorld(TAG)
+        val fb = FillDatabase(mDb!!, mDbWorkerThread)
 
         // uncommenting this function causing app to crash :/
         // todo: go through lab!
-        fb.addDataToDatabase(parsedApiData)
+        fb.addDataToDatabase(parsedApiData, applicationContext)
 
     }
 
