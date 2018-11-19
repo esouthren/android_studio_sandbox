@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.eilidh.a1513195_coursework.R.id.textView
 import com.google.gson.Gson
 
 
@@ -38,9 +40,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun callApi(lat: String, long: String, address:String) {
+    fun callApi(lat: String, long: String, address: String) {
         val web = "https://api.darksky.net/forecast"
-        val excludes ="?exclude=minutely,alerts,flags" // things to remove from the api call
+        val excludes = "?exclude=minutely,alerts,flags" // things to remove from the api call
         val time = "2018-11-15T12:30:00Z"
         val slash = "/"
         val flag = "?"
@@ -51,20 +53,20 @@ class MainActivity : AppCompatActivity() {
         val url = "$web$slash$APIKEY$slash$lat$delim$long$delim$time$flag$excludes"
         Log.i(TAG, url)
         val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener { response ->
-                val text = response
-                Log.i(TAG, text.toString())
-                parseJsonDataToApiData(response, address)
-            },
-        Response.ErrorListener { Log.i(TAG, "API Fail :( ") } )
+                Response.Listener { response ->
+                    val text = response
+                    Log.i(TAG, text.toString())
+                    parseJsonDataToApiData(response, address)
+                },
+                Response.ErrorListener { Log.i(TAG, "API Fail :( ") })
 
-    queue.add(jsonObjectRequest)
+        queue.add(jsonObjectRequest)
 
     }
 
-    fun parseJsonDataToApiData(data: JSONObject, address:String) {
-      // textView.text = data["temperature"].toString()
-      // textView.text = data["temperature"].toString()
+    fun parseJsonDataToApiData(data: JSONObject, address: String) {
+        // textView.text = data["temperature"].toString()
+        // textView.text = data["temperature"].toString()
         var gson = Gson()
         //Log.i("debug", data.toString())
         // fill an ApiData object with Json data
@@ -80,7 +82,7 @@ class MainActivity : AppCompatActivity() {
 
     fun openPreferences(view: View) {
         // open user preferences
-        val intent = Intent(this,SetUserPreferences::class.java).apply {
+        val intent = Intent(this, SetUserPreferences::class.java).apply {
 
         }
         startActivity(intent)
@@ -94,9 +96,9 @@ class MainActivity : AppCompatActivity() {
 
         fb.clearDatabase()
         // call api for each user preference
-        for(i in 0..9) {
+        for (i in 0..9) {
             var p = prefs?.getPrefLatLong(i)
-            if(p!!.length > 1) {
+            if (p!!.length > 1) {
                 // if a lat/long exists
                 val pSplit = p.split("\n")
                 val address = prefs!!.getPrefAddress(i)
@@ -114,25 +116,62 @@ class MainActivity : AppCompatActivity() {
         Log.i(TAG, "displaying data in DB...")
         // check db for data, if it contains data, display it?
 
-            val currentPlace = prefs!!.getPrefAddress(currentPrefView)
+        val currentPlace = prefs!!.getPrefAddress(currentPrefView)
 
-            // get 0th (current) hour
-            val rightNow = getPreferenceWeather(currentPlace)
-            //Log.i("debug", rightnow!!.size.toString())
-            //Log.i("debug", rightnow!!.toString())
+        // get 0th (current) hour
+        val rightNow = getPreferenceWeather(currentPlace)
+        //Log.i("debug", rightnow!!.size.toString())
+        //Log.i("debug", rightnow!!.toString())
 
     }
 
     fun displayEmptyDatabaseScreen() {
+        Log.i(TAG, "empty database screen")
         // hide windows and add a text box saying 'no data stored'
+        findViewById<TextView>(R.id.preference_title).setText("")
+        findViewById<TextView>(R.id.preference_summary).setText("No Data to Display")
+        //findViewById<TextView>(R.id.preference_title).setText("")
+        //findViewById<TextView>(R.id.preference_title).setText("")
+
+
     }
 
     fun getPreferenceWeather(address: String) {
         Log.i("debug", "\n\ngetPreferenceWeather")
         val task = Runnable {
             val currentWeather = mDb?.weatherDao()?.getSinglePreferenceData(address)
-            Log.i("debug", "got current weather: " + currentWeather!!.get(0).summary)
+            if (currentWeather!!.isEmpty()) {
+                Log.i("debug", "empty data")
+                runOnUiThread(
+                        object : Runnable {
+                            override fun run() {
+                                displayEmptyDatabaseScreen()
+                            }
+                        }
+                )
+
+            } else {
+                runOnUiThread(
+                        object : Runnable {
+                            override fun run() {
+                                Log.i("debug", "got current weather: " + currentWeather!!.get(0).summary)
+                                setPreferenceTitle(currentWeather.get(0).placeString!!)
+                                setPreferenceSummary(currentWeather.get(0).summary!!)
+                            }
+                        }
+                )
+
+            }
+
         }
         mDbWorkerThread.postTask(task)
+    }
+
+    fun setPreferenceTitle(place: String) {
+        findViewById<TextView>(R.id.preference_title).setText(place)
+    }
+
+    fun setPreferenceSummary(summary: String) {
+        findViewById<TextView>(R.id.preference_summary).setText(summary)
     }
 }
