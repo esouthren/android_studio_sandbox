@@ -10,11 +10,12 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.example.eilidh.a1513195_coursework.R.id.textView
+
 import com.google.gson.Gson
 
 
 import org.json.JSONObject
+import java.lang.Math.round
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,10 +48,11 @@ class MainActivity : AppCompatActivity() {
         val slash = "/"
         val flag = "?"
         val delim = ","
+        val units = "units=si"
         // api gets called here
         //Log.i(TAG, "API being called!")
         val queue = Volley.newRequestQueue(this)
-        val url = "$web$slash$APIKEY$slash$lat$delim$long$delim$time$flag$excludes"
+        val url = "$web$slash$APIKEY$slash$lat$delim$long$delim$time$flag$excludes$flag$units"
         Log.i(TAG, url)
         val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
                 Response.Listener { response ->
@@ -72,10 +74,6 @@ class MainActivity : AppCompatActivity() {
         // fill an ApiData object with Json data
         var parsedApiData = gson.fromJson(data.toString(), ApiData.CoreData::class.java)
 
-        //Log.i(TAG, "Hourly summary: " + parsedApiData.hourly.summary)
-        //Log.i(TAG, "length of hours array: " + parsedApiData.hourly.data.size)
-
-        // todo: go through lab!
         fb.addDataToDatabase(parsedApiData, applicationContext, address)
 
     }
@@ -130,8 +128,8 @@ class MainActivity : AppCompatActivity() {
         // hide windows and add a text box saying 'no data stored'
         findViewById<TextView>(R.id.preference_title).setText("")
         findViewById<TextView>(R.id.preference_summary).setText("No Data to Display")
-        //findViewById<TextView>(R.id.preference_title).setText("")
-        //findViewById<TextView>(R.id.preference_title).setText("")
+        findViewById<TextView>(R.id.preference_temp).setText("")
+        findViewById<TextView>(R.id.preference_chance_rain).setText("")
 
 
     }
@@ -157,6 +155,9 @@ class MainActivity : AppCompatActivity() {
                                 Log.i("debug", "got current weather: " + currentWeather!!.get(0).summary)
                                 setPreferenceTitle(currentWeather.get(0).placeString!!)
                                 setPreferenceSummary(currentWeather.get(0).summary!!)
+                                Log.i("debug", "TemperaturE: " + currentWeather.get(0).temperature)
+                                setPreferenceTemp(currentWeather.get(0).temperature!!)
+                                setPreferenceRainChance(currentWeather.get(0).precipProbability!!)
                             }
                         }
                 )
@@ -173,5 +174,18 @@ class MainActivity : AppCompatActivity() {
 
     fun setPreferenceSummary(summary: String) {
         findViewById<TextView>(R.id.preference_summary).setText(summary)
+    }
+
+    fun setPreferenceTemp(temp: Double) {
+        val rounded = round(temp)
+        val degree = Typography.degree
+
+        findViewById<TextView>(R.id.preference_temp).setText("$rounded$degree")
+    }
+
+    fun setPreferenceRainChance(chance: Double) {
+        val edit = round(chance*10)
+        findViewById<TextView>(R.id.preference_chance_rain).setText("$edit%")
+
     }
 }

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">1513195_coursework</string>
     <string name="action_settings">Settings</string>
-    <string name="str_update_api">Update Weather</string>
+    <string name="str_update_api">Refresh Data</string>
     <string name="title_activity_user_preferences">User Preferences</string>
 
     <!-- Strings related to Settings -->
