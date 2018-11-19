@@ -30,9 +30,14 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread) {
         //thread.postTask(task)
 
         // todo: add internet connectivity check
-        val weatherData = WeatherData(123,"Test!",0.0,0.0,0,"","","",0.0)
-        insertWeatherDataInDb(weatherData)
+        */
+        /*val weatherData = WeatherData(10,"",0.0,0.0,0,
+                "","","",0.0, 0.0,
+                "", "", 0.0, 0.0,
+                0.0,0.0,0.0,0.0,0.0)
 */
+        //insertWeatherDataInDb(weatherData)
+
 
 }
 
@@ -55,6 +60,7 @@ private fun fetchWeatherDataFromDb(context: Context) {
 }
 
 private fun insertWeatherDataInDb(weatherData: WeatherData) {
+    Log.i("debug", "Inserting data...")
     val task = Runnable { mDb?.weatherDao()?.insert(weatherData) }
     mDbWorkerThread.postTask(task)
 }

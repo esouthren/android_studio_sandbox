@@ -4,8 +4,9 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 
+
 @Entity(tableName = "weatherData")
-data class WeatherData(@PrimaryKey() var uid: Int,
+data class WeatherData(@PrimaryKey(autoGenerate = true) var uid: Int,
                        @ColumnInfo(name = "place_string") var placeString: String,
                        @ColumnInfo(name = "latitude") var latitude: Double,
                        @ColumnInfo(name = "longitude") var longitude: Double,
@@ -13,35 +14,23 @@ data class WeatherData(@PrimaryKey() var uid: Int,
                        @ColumnInfo(name = "summary") var summary: String,
                        @ColumnInfo(name = "icon") var icon: String,
                        @ColumnInfo(name = "time") var time: String,
-                       @ColumnInfo(name = "temperature") var temperature: Double)
-                        {
-                        constructor():this(0,"",0.0,0.0,0,"","","",0.0)
-                        }
-// each database entry is city + time
+                       @ColumnInfo(name = "temperature") var temperature: Double,
+                       @ColumnInfo(name = "precipProbaility") var precipProbability: Double,
+                       @ColumnInfo(name = "precipType") var precipType: String,
+                       @ColumnInfo(name = "apparantTemperature") var apparantTemperature: String,
+                       @ColumnInfo(name = "humidity") var humidity: Double,
+                       @ColumnInfo(name = "pressure") var pressure: Double,
+                       @ColumnInfo(name = "windspeed") var windspeed: Double,
+                       @ColumnInfo(name = "windGust") var windGust: Double,
+                       @ColumnInfo(name = "cloudCover") var cloudCover: Double,
+                       @ColumnInfo(name = "uvIndex") var uvIndex: Double,
+                       @ColumnInfo(name = "visibility") var visibility: Double)
 
-/*
-e.g. AberdeenHour0      lat=x long=x
-            var latitude: Float,
-            var longitude: Float,
-            var timezone: String,
-            var hourly: Hourly
-    data class Hourly(
-            var summary: String,
-            var icon: String,
-            var data: Array<HourData>
-    data class HourData(
-            var time: Long,
-            var precipProbability: Float,
-            var precipType: String,
-            var temperature: Float,
-            var summary: String, // e.g. "Partly Cloudy"
-            var icon: String,
-            var apparantTemperature: Float, // 'feels like...'
-            var humidity: Float,
-            var pressure: Float,
-            var windspeed: Float,
-            var windGust: Float,
-            var cloudCover: Float,
-            var uvIndex: Long,
-            var visibility: Float
- */
+
+                {
+                constructor():this(0,"",0.0,0.0,0,
+                        "","","",0.0, 0.0,
+                        "", "", 0.0, 0.0,
+                        0.0,0.0,0.0,0.0,0.0)
+                }
+// each database entry is city + time

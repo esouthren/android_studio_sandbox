@@ -5,7 +5,7 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 
-@Database(entities = arrayOf(WeatherData::class), version = 1)
+@Database(entities = arrayOf(WeatherData::class), version = 3)
 abstract class WeatherDatabase : RoomDatabase() {
     abstract fun weatherDao(): WeatherDataDao
 
@@ -16,6 +16,7 @@ abstract class WeatherDatabase : RoomDatabase() {
                 synchronized(WeatherDatabase::class) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             WeatherDatabase::class.java, "weather.db")
+                            .fallbackToDestructiveMigration()
                             .build()
                 }
             }
