@@ -17,27 +17,45 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread) {
     private var mDb = mDb
 
 
-    fun addDataToDatabase(data: ApiData.CoreData, context: Context) {
+    fun addDataToDatabase(data: ApiData.CoreData, context: Context, address: String) {
         // clear database
-        clearDatabase()
-        Log.i("debug", "adding data to database")
-        fetchWeatherDataFromDb(context)
-        /*
+        //clearDatabase()
+        //Log.i("debug", "adding data to database")
+        //fetchWeatherDataFromDb(context)
+        //Log.i("debug", data.toString())
+
+        // coredata
 
 
-        //val task = Runnable { db?.userDao()?.insert(weatherData) }
-        //thread.postTask(task)
+        // data within each hour
+        var hourCount = 0
+        for (thisHour in data.hourly.data) {
+            val weatherData = WeatherData(
+                    Random().nextInt((100000000 + 1) - 1) + 1,
+                    address,
+                    data.latitude?.toDouble(),
+                    data.longitude?.toDouble(),
+                    hourCount,
+                    thisHour.summary,
+                    thisHour.icon?.toString(),
+                    thisHour.time?.toString(),
+                    thisHour.temperature?.toDouble(),
+                    thisHour.precipProbability?.toDouble(),
+                    thisHour.precipType,
+                    thisHour.apparantTemperature?.toString(),
+                    thisHour.humidity?.toDouble(),
+                    thisHour.pressure?.toDouble(),
+                    thisHour.windspeed?.toDouble(),
+                    thisHour.windGust?.toDouble(),
+                    thisHour.cloudCover?.toDouble(),
+                    thisHour.uvIndex?.toDouble(),
+                    thisHour.visibility?.toDouble()
+            )
+            insertWeatherDataInDb(weatherData)
+            Log.i("debug", "hour: $hourCount : $weatherData")
+            hourCount++
+        }
 
-        // todo: add internet connectivity check
-        */
-        val bloop = Random().nextInt((100000000 + 1) - 1) + 1
-
-        val weatherData = WeatherData(bloop, "holla!", 0.0, 0.0, 0,
-                "", "", "", 0.0, 0.0,
-                "", "", 0.0, 0.0,
-                0.0, 0.0, 0.0, 0.0, 0.0)
-
-        insertWeatherDataInDb(weatherData)
         fetchWeatherDataFromDb(context)
 
 
@@ -82,7 +100,7 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread) {
     }
 
 
-    private fun clearDatabase() {
+    fun clearDatabase() {
         val task = Runnable { mDb?.weatherDao()?.deleteAll() }
         mDbWorkerThread.postTask(task)
     }
