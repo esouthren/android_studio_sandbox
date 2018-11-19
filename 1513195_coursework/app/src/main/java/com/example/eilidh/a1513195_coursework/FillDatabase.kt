@@ -52,7 +52,6 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread) {
                     thisHour.visibility?.toDouble()
             )
             insertWeatherDataInDb(weatherData)
-            Log.i("debug", "hour: $hourCount : $weatherData")
             hourCount++
         }
 
@@ -71,7 +70,7 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread) {
             if (weatherData == null || weatherData?.size == 0) {
                 Log.i("debug", "no data in database :(")
             } else {
-                Log.i("debug", "there's some data!" + weatherData.size)
+                Log.i("debug", "there's some data! Rows: " + weatherData.size)
 
             }
         }
@@ -104,5 +103,6 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread) {
         val task = Runnable { mDb?.weatherDao()?.deleteAll() }
         mDbWorkerThread.postTask(task)
     }
+
 
 }

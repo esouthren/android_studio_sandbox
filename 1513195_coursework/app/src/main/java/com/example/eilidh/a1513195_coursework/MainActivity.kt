@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mDbWorkerThread: DbWorkerThread
     private var mDb: WeatherDatabase? = null
     lateinit var fb: FillDatabase
+    var currentPrefView = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,11 +105,34 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
+        // update data
+        displayDbData()
 
     }
 
     fun displayDbData() {
         Log.i(TAG, "displaying data in DB...")
         // check db for data, if it contains data, display it?
+
+            val currentPlace = prefs!!.getPrefAddress(currentPrefView)
+
+            // get 0th (current) hour
+            val rightNow = getPreferenceWeather(currentPlace)
+            //Log.i("debug", rightnow!!.size.toString())
+            //Log.i("debug", rightnow!!.toString())
+
+    }
+
+    fun displayEmptyDatabaseScreen() {
+        // hide windows and add a text box saying 'no data stored'
+    }
+
+    fun getPreferenceWeather(address: String) {
+        Log.i("debug", "\n\ngetPreferenceWeather")
+        val task = Runnable {
+            val currentWeather = mDb?.weatherDao()?.getSinglePreferenceData(address)
+            Log.i("debug", "got current weather: " + currentWeather!!.get(0).summary)
+        }
+        mDbWorkerThread.postTask(task)
     }
 }

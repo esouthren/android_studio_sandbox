@@ -15,4 +15,11 @@ interface WeatherDataDao {
 
     @Query("DELETE from weatherData")
     fun deleteAll()
+
+    // Get a preference (place) with one hour of data
+    @Query("SELECT * FROM weatherData WHERE place_string = :place AND hour = :hour")
+    fun getSingleHour(place: String, hour: Int): List<WeatherData>
+
+    @Query("SELECT * FROM weatherData WHERE place_string = :place")
+    fun getSinglePreferenceData(place: String): List<WeatherData>
 }
