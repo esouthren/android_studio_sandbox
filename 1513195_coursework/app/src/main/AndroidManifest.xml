@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name=".UserPreferences"
+            android:name=".SetUserPreferences"
             android:label="@string/title_activity_user_preferences"></activity>
     </application>
 

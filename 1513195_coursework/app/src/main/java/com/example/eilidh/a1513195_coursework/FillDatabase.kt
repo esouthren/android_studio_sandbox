@@ -11,7 +11,7 @@ class FillDatabase() {
         Log.i(tag, "Hello!")
     }
 
-    fun addDataToDatabase(data: JSONObject, db: Database, thread: DbWorkerThread) {
+    fun addDataToDatabase(data: ApiData.CoreData) {
 
         //var gson = Gson()
         //var jsonData = gson.fromJson(data.toString(), ApiData.CoreData::class.java)
