@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         mDbWorkerThread.start()
         mDb = WeatherDatabase.getInstance(this)
         fb = FillDatabase(mDb!!, mDbWorkerThread)
-        displayDbData()
+        //displayDbData()
 
     }
 
