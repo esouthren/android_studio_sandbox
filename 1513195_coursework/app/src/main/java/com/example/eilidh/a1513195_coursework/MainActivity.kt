@@ -12,6 +12,8 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 
 import com.google.gson.Gson
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 import org.json.JSONObject
@@ -23,9 +25,9 @@ class MainActivity : AppCompatActivity() {
     val APIKEY = "bd233fef7ea7953a843bbbb58fc087ba"
     var prefs: Prefs? = null
     private lateinit var mDbWorkerThread: DbWorkerThread
+
     private var mDb: WeatherDatabase? = null
     lateinit var fb: FillDatabase
-    var currentPrefView = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,13 +37,19 @@ class MainActivity : AppCompatActivity() {
         prefs = Prefs(this)
         mDbWorkerThread = DbWorkerThread("dbWorkerThread")
         mDbWorkerThread.start()
+
+
         mDb = WeatherDatabase.getInstance(this)
-        fb = FillDatabase(mDb!!, mDbWorkerThread)
+        fb = FillDatabase(mDb!!, mDbWorkerThread, prefs!!,this@MainActivity)
+
         displayDbData()
+        prefs!!.setCurrentPrefView(0)
+        Log.i("debug", "current pref view: " + prefs!!.getCurrentPrefView())
 
     }
 
     fun callApi(lat: String, long: String, address: String) {
+        Log.i("debug", "2) CallApi()")
         val web = "https://api.darksky.net/forecast"
         val excludes = "exclude=minutely,alerts,flags" // things to remove from the api call
         val time = "2018-11-15T12:30:00Z"
@@ -66,6 +74,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun parseJsonDataToApiData(data: JSONObject, address: String) {
+        Log.i("debug", "3) parseJsonDataToApiData")
         // textView.text = data["temperature"].toString()
         // textView.text = data["temperature"].toString()
         var gson = Gson()
@@ -86,35 +95,55 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun updateWeatherData(view: View) {
+
         Log.i(TAG, "emptying database")
         // toDo: empty DB of all values to be replaced with these
         // todo check internet connection before clearing database
         // don't call aPIs unless there's an internet connection
 
         fb.clearDatabase()
-        // call api for each user preference
-        for (i in 0..9) {
-            var p = prefs?.getPrefLatLong(i)
-            Log.i("debug", "calling api for: " + prefs?.getPrefAddress(i))
-            if (p!!.length > 1) {
-                // if a lat/long exists
-                val pSplit = p.split("\n")
-                val address = prefs!!.getPrefAddress(i)
-                Log.i("debug", "calling api for $address")
-                callApi(pSplit[0], pSplit[1], address)
+        // Look at RunBlocking docs
+        //runBlocking {
+           // launch(coroutineContext) {
+                val task = Runnable {
+                    // call api for each user preference
+                    for (i in 0..9) {
+                        var p = prefs?.getPrefLatLong(i)
+                        Log.i("debug", "1) calling api for: " + prefs?.getPrefAddress(i))
+                        if (p!!.length > 1) {
+                            // if a lat/long exists
+                            val pSplit = p.split("\n")
+                            val address = prefs!!.getPrefAddress(i)
+                            Log.i("debug", "calling api for $address")
+                            callApi(pSplit[0], pSplit[1], address)
 
-            }
+                        }
+                    }
+
+                }
+                mDbWorkerThread.postTask(task)
+         //   }.join()
+          //  run {
+
+                displayDbData()
+          //  }
         }
-        // update data
-        displayDbData()
 
-    }
+
+
+
+        //Thread.sleep(1000)
+        //mDbWorkerThread.join()
+        //displayDbData()
+
+    //}
 
     fun displayDbData() {
-        Log.i(TAG, "displaying data in DB...")
-        // check db for data, if it contains data, display it?
 
-        val currentPlace = prefs!!.getPrefAddress(currentPrefView)
+        Log.i(TAG, "6) displayData: displaying data in DB...")
+        // check db for data, if it contains data, display it?
+        val c = prefs!!.getCurrentPrefView()
+        val currentPlace = prefs!!.getPrefAddress(c)
 
         // get 0th (current) hour
         getPreferenceWeather(currentPlace)
@@ -135,11 +164,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun getPreferenceWeather(address: String) {
-        Log.i("debug", "\n\ngetPreferenceWeather")
         val task = Runnable {
             val currentWeather = mDb?.weatherDao()?.getSinglePreferenceData(address)
             if (currentWeather!!.isEmpty()) {
-                Log.i("debug", "no database data")
+                Log.i("debug", "getPreferenceWeather: no database data ")
                 runOnUiThread(
                         object : Runnable {
                             override fun run() {
@@ -152,7 +180,7 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread(
                         object : Runnable {
                             override fun run() {
-                                Log.i("debug", "got current weather: " + currentWeather!!.get(0).summary)
+                                Log.i("debug", "getPreferenceWeather: got current weather: " + currentWeather!!.get(0).summary)
                                 setPreferenceTitle(currentWeather.get(0).placeString!!)
                                 setPreferenceSummary(currentWeather.get(0).summary!!)
                                 Log.i("debug", "TemperaturE: " + currentWeather.get(0).temperature)

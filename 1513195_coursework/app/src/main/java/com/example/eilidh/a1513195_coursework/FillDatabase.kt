@@ -1,23 +1,29 @@
 package com.example.eilidh.a1513195_coursework
 
+import android.app.Activity
+import android.app.PendingIntent.getActivity
 import android.arch.persistence.room.Room
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.support.v4.content.ContextCompat.getSystemService
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import com.google.gson.Gson
 import org.json.JSONObject
 import java.util.*
 
-class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread) {
+class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs: Prefs, activity: Activity) {
 
     private var mDbWorkerThread = mDbWorkerThread
     private var mDb = mDb
+    private var prefs = prefs
+    private var activity = activity
 
 
     fun addDataToDatabase(data: ApiData.CoreData, context: Context, address: String) {
+        Log.i("debug", "4) adddataToDatabase")
         // clear database
         //clearDatabase()
         //Log.i("debug", "adding data to database")
@@ -57,7 +63,7 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread) {
             hourCount++
         }
 
-        fetchWeatherDataFromDb(context)
+        //fetchWeatherDataFromDb(context)
 
 
     }
@@ -74,6 +80,7 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread) {
             } else {
                 Log.i("debug", "there's some data! Rows: " + weatherData.size)
 
+
             }
         }
         mDbWorkerThread.postTask(task)
@@ -81,8 +88,10 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread) {
     }
 
     private fun insertWeatherDataInDb(weatherData: WeatherData) {
-        Log.i("debug", "Inserting data...")
-        val task = Runnable { mDb?.weatherDao()?.insert(weatherData) }
+        Log.i("debug", "5) insertWeatherDataInDb")
+        val task = Runnable { mDb?.weatherDao()?.insert(weatherData)
+            displayDbData()
+        }
         mDbWorkerThread.postTask(task)
     }
 
@@ -113,6 +122,75 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread) {
         else {
             return ((f - 32.0) * (5.0 / 9.0))
         }
+    }
+
+    fun displayDbData() {
+
+        Log.i("debug", "6 part 2) displayData: displaying data in DB...")
+        // check db for data, if it contains data, display it?
+
+        val currentPlace =  prefs!!.getPrefAddress(prefs!!.getCurrentPrefView())
+
+        // get 0th (current) hour
+        getPreferenceWeather(currentPlace)
+        //Log.i("debug", rightnow!!.size.toString())
+        //Log.i("debug", rightnow!!.toString())
+
+    }
+
+
+    fun getPreferenceWeather(address: String) {
+        val task = Runnable {
+            val currentWeather = mDb?.weatherDao()?.getSinglePreferenceData(address)
+            if (currentWeather!!.isEmpty()) {
+                Log.i("debug", "getPreferenceWeather: no database data ")
+                activity.runOnUiThread(
+                        object : Runnable {
+                            override fun run() {
+                                //displayEmptyDatabaseScreen()
+                            }
+                        }
+                )
+
+            } else {
+                activity.runOnUiThread(
+                        object : Runnable {
+                            override fun run() {
+                                Log.i("debug", "getPreferenceWeather: got current weather: " + currentWeather!!.get(0).summary)
+                                setPreferenceTitle(currentWeather.get(0).placeString!!)
+                                setPreferenceSummary(currentWeather.get(0).summary!!)
+                                Log.i("debug", "TemperaturE: " + currentWeather.get(0).temperature)
+                                setPreferenceTemp(currentWeather.get(0).temperature!!)
+                                setPreferenceRainChance(currentWeather.get(0).precipProbability!!)
+                            }
+                        }
+                )
+
+            }
+
+        }
+        mDbWorkerThread.postTask(task)
+    }
+
+    fun setPreferenceTitle(place: String) {
+        activity.findViewById<TextView>(R.id.preference_title).setText(place)
+    }
+
+    fun setPreferenceSummary(summary: String) {
+        activity.findViewById<TextView>(R.id.preference_summary).setText(summary)
+    }
+
+    fun setPreferenceTemp(temp: Double) {
+        val rounded = Math.round(temp)
+        val degree = Typography.degree
+
+        activity.findViewById<TextView>(R.id.preference_temp).setText("$rounded$degree")
+    }
+
+    fun setPreferenceRainChance(chance: Double) {
+        val edit = Math.round(chance * 10)
+        activity.findViewById<TextView>(R.id.preference_chance_rain).setText("$edit%")
+
     }
 
 

@@ -10,6 +10,8 @@ class Prefs (context: Context)  {
     // stores preferences' lat/long
     val PREFERENCES_LAT_LONG = Array(10, { i -> ((i + 1).toString()+"_LATLONG") })
 
+    val CURRENT_PREF_VIEW = "CURRENT_PREFERENCE_DISPLAY" // which preference is the default display?
+
     val preferences: SharedPreferences = context.getSharedPreferences(PREFS_FILENAME, 0);
 
     fun setPrefAddress(index: Int, value: String) {
@@ -26,6 +28,19 @@ class Prefs (context: Context)  {
 
     fun getPrefLatLong(index: Int): String {
         return this.preferences.getString(PREFERENCES_LAT_LONG[index], "")
+    }
+
+    fun getCurrentPrefView(): Int {
+        val v = this.preferences.getString(CURRENT_PREF_VIEW, "")
+        if(v.equals("")) { return 0 }
+            else {
+                return v.toInt()
+            }
+        }
+
+    fun setCurrentPrefView(index: Int) {
+        val v = index.toString()
+        this.preferences.edit().putString(CURRENT_PREF_VIEW, v)
     }
 
 
