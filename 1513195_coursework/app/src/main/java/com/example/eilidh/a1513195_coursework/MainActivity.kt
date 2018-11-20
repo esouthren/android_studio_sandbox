@@ -96,6 +96,7 @@ class MainActivity : AppCompatActivity() {
         // call api for each user preference
         for (i in 0..9) {
             var p = prefs?.getPrefLatLong(i)
+            Log.i("debug", "calling api for: " + prefs?.getPrefAddress(i))
             if (p!!.length > 1) {
                 // if a lat/long exists
                 val pSplit = p.split("\n")
@@ -117,7 +118,7 @@ class MainActivity : AppCompatActivity() {
         val currentPlace = prefs!!.getPrefAddress(currentPrefView)
 
         // get 0th (current) hour
-        val rightNow = getPreferenceWeather(currentPlace)
+        getPreferenceWeather(currentPlace)
         //Log.i("debug", rightnow!!.size.toString())
         //Log.i("debug", rightnow!!.toString())
 
@@ -139,7 +140,7 @@ class MainActivity : AppCompatActivity() {
         val task = Runnable {
             val currentWeather = mDb?.weatherDao()?.getSinglePreferenceData(address)
             if (currentWeather!!.isEmpty()) {
-                Log.i("debug", "empty data")
+                Log.i("debug", "no database data")
                 runOnUiThread(
                         object : Runnable {
                             override fun run() {
