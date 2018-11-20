@@ -17,7 +17,7 @@ data class WeatherData(@PrimaryKey(autoGenerate = true) var uid: Int,
                        @ColumnInfo(name = "temperature") var temperature: Double?,
                        @ColumnInfo(name = "precipProbaility") var precipProbability: Double?,
                        @ColumnInfo(name = "precipType") var precipType: String?,
-                       @ColumnInfo(name = "apparantTemperature") var apparantTemperature: String?,
+                       @ColumnInfo(name = "apparantTemperature") var apparantTemperature: Double?,
                        @ColumnInfo(name = "humidity") var humidity: Double?,
                        @ColumnInfo(name = "pressure") var pressure: Double?,
                        @ColumnInfo(name = "windspeed") var windspeed: Double?,
@@ -30,7 +30,7 @@ data class WeatherData(@PrimaryKey(autoGenerate = true) var uid: Int,
                 {
                 constructor():this(0,"",0.0,0.0,0,
                         "","","",0.0, 0.0,
-                        "", "", 0.0, 0.0,
+                        "", 0.0, 0.0, 0.0,
                         0.0,0.0,0.0,0.0,0.0)
                 }
 // each database entry is city + time

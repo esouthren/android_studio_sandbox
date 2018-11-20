@@ -37,22 +37,21 @@ class MainActivity : AppCompatActivity() {
         mDbWorkerThread.start()
         mDb = WeatherDatabase.getInstance(this)
         fb = FillDatabase(mDb!!, mDbWorkerThread)
-        //displayDbData()
+        displayDbData()
 
     }
 
     fun callApi(lat: String, long: String, address: String) {
         val web = "https://api.darksky.net/forecast"
-        val excludes = "?exclude=minutely,alerts,flags" // things to remove from the api call
+        val excludes = "exclude=minutely,alerts,flags" // things to remove from the api call
         val time = "2018-11-15T12:30:00Z"
         val slash = "/"
         val flag = "?"
         val delim = ","
-        val units = "units=si"
         // api gets called here
         //Log.i(TAG, "API being called!")
         val queue = Volley.newRequestQueue(this)
-        val url = "$web$slash$APIKEY$slash$lat$delim$long$delim$time$flag$excludes$flag$units"
+        val url = "$web$slash$APIKEY$slash$lat$delim$long$delim$time$flag$excludes"
         Log.i(TAG, url)
         val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
                 Response.Listener { response ->

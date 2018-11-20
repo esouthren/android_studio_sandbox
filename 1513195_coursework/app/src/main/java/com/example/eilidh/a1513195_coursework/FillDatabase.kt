@@ -29,6 +29,8 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread) {
 
         // data within each hour
         var hourCount = 0
+
+
         for (thisHour in data.hourly.data) {
             val weatherData = WeatherData(
                     Random().nextInt((100000000 + 1) - 1) + 1,
@@ -37,12 +39,12 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread) {
                     data.longitude?.toDouble(),
                     hourCount,
                     thisHour.summary,
-                    thisHour.icon?.toString(),
+                    thisHour.icon,
                     thisHour.time?.toString(),
-                    thisHour.temperature?.toDouble(),
+                    convertToCelcius(thisHour.temperature?.toDouble()),
                     thisHour.precipProbability?.toDouble(),
                     thisHour.precipType,
-                    thisHour.apparantTemperature?.toString(),
+                    convertToCelcius(thisHour.apparantTemperature?.toDouble()),
                     thisHour.humidity?.toDouble(),
                     thisHour.pressure?.toDouble(),
                     thisHour.windspeed?.toDouble(),
@@ -102,6 +104,15 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread) {
     fun clearDatabase() {
         val task = Runnable { mDb?.weatherDao()?.deleteAll() }
         mDbWorkerThread.postTask(task)
+    }
+
+    fun convertToCelcius(f: Double?): Double {
+        if(f==null) {
+            return 0.0
+        }
+        else {
+            return ((f - 32.0) * (5.0 / 9.0))
+        }
     }
 
 
