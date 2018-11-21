@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     val APIKEY = "bd233fef7ea7953a843bbbb58fc087ba"
     var prefs: Prefs? = null
     private lateinit var mDbWorkerThread: DbWorkerThread
-
+    var onlineChecker: OnlineChecker = OnlineChecker()
     private var mDb: WeatherDatabase? = null
     lateinit var fb: FillDatabase
 
@@ -37,10 +37,11 @@ class MainActivity : AppCompatActivity() {
         prefs = Prefs(this)
         mDbWorkerThread = DbWorkerThread("dbWorkerThread")
         mDbWorkerThread.start()
+        //onlineChecker = OnlineChecker()
 
 
         mDb = WeatherDatabase.getInstance(this)
-        fb = FillDatabase(mDb!!, mDbWorkerThread, prefs!!,this@MainActivity)
+        fb = FillDatabase(mDb!!, mDbWorkerThread, prefs!!, this@MainActivity)
 
         fb.displayDbData()
         prefs!!.setCurrentPrefView(0)
@@ -94,6 +95,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun updateWeatherData(view: View) {
+
         Log.i("debug", "Refresh Data button pressed")
         // check to see if there are user preferences
         val userPreferences = prefs?.getNumberOfPreferences()
@@ -101,23 +103,27 @@ class MainActivity : AppCompatActivity() {
             // display popup error message
             Log.i("debug", "no preferences!")
         } else {
-            // todo check internet connection before clearing database
-            // don't call aPIs unless there's an internet connection
-            fb.clearDatabase()
+            if (onlineChecker.isOnline()) {
+                // todo check internet connection before clearing database
+                // don't call aPIs unless there's an internet connection
+                fb.clearDatabase()
 
-            val task = Runnable {
-                // call api for each user preference
-                for (i in 0..9) {
-                    var p = prefs?.getPrefLatLong(i)
-                    if (p!!.length > 1) {
-                        // if a lat/long exists
-                        val pSplit = p.split("\n")
-                        val address = prefs!!.getPrefAddress(i)
-                        callApi(pSplit[0], pSplit[1], address)
+                val task = Runnable {
+                    // call api for each user preference
+                    for (i in 0..9) {
+                        var p = prefs?.getPrefLatLong(i)
+                        if (p!!.length > 1) {
+                            // if a lat/long exists
+                            val pSplit = p.split("\n")
+                            val address = prefs!!.getPrefAddress(i)
+                            callApi(pSplit[0], pSplit[1], address)
+                        }
                     }
                 }
+                mDbWorkerThread.postTask(task)
+            } else {
+                onlineChecker.displayOfflineError(view)
             }
-            mDbWorkerThread.postTask(task)
         }
     }
 }
