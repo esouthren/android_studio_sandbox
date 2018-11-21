@@ -12,15 +12,14 @@
         android:id="@+id/linearLayout4"
         android:layout_width="fill_parent"
         android:layout_height="55dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="55dp"
         android:background="@color/themeLightBlue"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/preference_icon"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp"></LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout5"
         android:layout_width="fill_parent"
         android:layout_height="84dp"
         android:background="@color/themeLightBlue"
@@ -32,15 +31,15 @@
 
     <ImageView
         android:id="@+id/preference_icon"
-        android:layout_width="215dp"
-        android:layout_height="228dp"
+        android:layout_width="202dp"
+        android:layout_height="213dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="170dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@mipmap/sun"
-        tools:layout_editor_absoluteY="89dp" />
+        app:srcCompat="@mipmap/sun" />
 
     <TextView
         android:id="@+id/preference_temp"
