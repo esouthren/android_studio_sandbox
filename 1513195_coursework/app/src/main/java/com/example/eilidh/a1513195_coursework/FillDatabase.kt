@@ -1,21 +1,15 @@
 package com.example.eilidh.a1513195_coursework
 
 import android.app.Activity
-import android.app.PendingIntent.getActivity
-import android.arch.persistence.room.Room
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import android.support.v4.content.ContextCompat.getSystemService
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import com.google.gson.Gson
-import org.json.JSONObject
 import java.util.*
 
-class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs: Prefs, activity: Activity) {
+class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs: UserPreferences, activity: Activity) {
 
     private var mDbWorkerThread = mDbWorkerThread
     private var mDb = mDb

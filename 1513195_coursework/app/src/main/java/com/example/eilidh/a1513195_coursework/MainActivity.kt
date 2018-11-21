@@ -5,25 +5,21 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 
 import com.google.gson.Gson
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 
 import org.json.JSONObject
-import java.lang.Math.round
 
 class MainActivity : AppCompatActivity() {
 
     val TAG = "debug"
     val APIKEY = "bd233fef7ea7953a843bbbb58fc087ba"
-    var prefs: Prefs? = null
+    var prefs: UserPreferences? = null
     private lateinit var mDbWorkerThread: DbWorkerThread
     var onlineChecker: OnlineChecker = OnlineChecker()
     private var mDb: WeatherDatabase? = null
@@ -34,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        prefs = Prefs(this)
+        prefs = UserPreferences(this)
         mDbWorkerThread = DbWorkerThread("dbWorkerThread")
         mDbWorkerThread.start()
         //onlineChecker = OnlineChecker()
@@ -98,10 +94,9 @@ class MainActivity : AppCompatActivity() {
 
         Log.i("debug", "Refresh Data button pressed")
         // check to see if there are user preferences
-        val userPreferences = prefs?.getNumberOfPreferences()
-        if (userPreferences == 0) {
-            // display popup error message
-            Log.i("debug", "no preferences!")
+        if(prefs!!.hasPreferences()) {
+            // display error about having no preferences
+            prefs!!.displayNoPreferencesError(view)
         } else {
             if (onlineChecker.isOnline()) {
                 // todo check internet connection before clearing database

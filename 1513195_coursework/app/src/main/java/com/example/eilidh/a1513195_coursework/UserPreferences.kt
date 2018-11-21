@@ -2,8 +2,10 @@ package com.example.eilidh.a1513195_coursework
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.support.v7.app.AlertDialog
+import android.view.View
 
-class Prefs (context: Context)  {
+class UserPreferences (context: Context)  {
     val PREFS_FILENAME = "user_preferences"
     // array of 0 - 9 to store user preferences
     val PREFERENCES = Array(10, { i -> (i + 1).toString() })
@@ -38,6 +40,13 @@ class Prefs (context: Context)  {
             }
         }
 
+    fun hasPreferences(): Boolean {
+        if(getNumberOfPreferences() == 0) {
+            return false
+        }
+        return true
+    }
+
     fun setCurrentPrefView(index: Int) {
         val v = index.toString()
         this.preferences.edit().putString(CURRENT_PREF_VIEW, v)
@@ -60,5 +69,22 @@ class Prefs (context: Context)  {
             this.preferences.edit().putString(PREFERENCES_LAT_LONG[i], " ").apply()
         }
         // add 'preferences cleared' toast?
+    }
+
+
+    fun displayNoPreferencesError(view: View) {
+        // display error message that user is not online
+        val builder = AlertDialog.Builder(view.context)
+
+        with(builder)
+        {
+            setTitle("No Preferences Stored")
+            setMessage("You haven't set any location preferences." +
+                    "\n\nOpen the Settings screen to add some preferences.")
+
+            setPositiveButton("OK") { dialog, which -> null }
+
+            show()
+        }
     }
 }

@@ -1,15 +1,9 @@
 package com.example.eilidh.a1513195_coursework
 
-import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 
-import android.content.SharedPreferences
-import android.os.Handler
-import android.os.Message
-import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.widget.EditText
 import javax.security.auth.callback.Callback
@@ -31,13 +25,13 @@ class SetUserPreferences : AppCompatActivity(), Callback {
             R.id.user_pref_9,
             R.id.user_pref_10)
 
-    var prefs: Prefs? = null
+    var prefs: UserPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.user_preferences)
-        prefs = Prefs(this)
+        prefs = UserPreferences(this)
         displayUserPreferences()
 
     }
@@ -104,7 +98,7 @@ class SetUserPreferences : AppCompatActivity(), Callback {
         displayUserPreferences()
     }
 
-    fun getLatLong(address: String, index: Int, prefs: Prefs, view: View) {
+    fun getLatLong(address: String, index: Int, prefs: UserPreferences, view: View) {
         val locationAddress = GeocodingLocation(this@SetUserPreferences)
         locationAddress.getAddressFromLocation(address,
                 applicationContext, index, prefs, view)

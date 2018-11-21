@@ -3,11 +3,7 @@ package com.example.eilidh.a1513195_coursework
 
 import android.app.Activity
 import android.content.Context
-import android.location.Address
 import android.location.Geocoder
-import android.os.Bundle
-import android.os.Handler
-import android.os.Message
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.View
@@ -22,7 +18,7 @@ class GeocodingLocation(activity: Activity) {
 
 
     fun getAddressFromLocation(locationAddress: String,
-                               context: Context, prefIndex: Int, prefs: Prefs, view: View) {
+                               context: Context, prefIndex: Int, prefs: UserPreferences, view: View) {
         Log.i("debug", "Starting to find lat/long...")
         val thread = object : Thread() {
             override fun run() {
