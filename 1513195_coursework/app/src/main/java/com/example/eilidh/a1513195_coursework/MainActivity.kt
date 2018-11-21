@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun updateWeatherData(view: View) {
-
+        Log.i("debug", "Refresh Data button pressed")
         // check to see if there are user preferences
         val userPreferences = prefs?.getNumberOfPreferences()
         if (userPreferences == 0) {

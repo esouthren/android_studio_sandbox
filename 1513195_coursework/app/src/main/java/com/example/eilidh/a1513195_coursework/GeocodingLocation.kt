@@ -1,24 +1,28 @@
 package com.example.eilidh.a1513195_coursework
 
 
+import android.app.Activity
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.support.v7.app.AlertDialog
 import android.util.Log
+import android.view.View
 
 import java.io.IOException
 import java.util.Locale
 
-class GeocodingLocation {
+class GeocodingLocation(activity: Activity) {
 
     private val TAG = "GeocodingLocation"
+    private var activity = activity
 
 
     fun getAddressFromLocation(locationAddress: String,
-                               context: Context, prefIndex: Int, prefs: Prefs) {
+                               context: Context, prefIndex: Int, prefs: Prefs, view: View) {
         Log.i("debug", "Starting to find lat/long...")
         val thread = object : Thread() {
             override fun run() {
@@ -43,12 +47,31 @@ class GeocodingLocation {
                         Log.i("debug", "setting new latlong: " + prefIndex + " \t" + prefs!!.getPrefLatLong(prefIndex))
 
                     } else {
-                        // todo what do when lat/long fails
+                       
+
                     }
 
                 }
             }
         }
         thread.start()
+    }
+
+    fun invalidAddressAlert(view: View, address: String){
+
+        val builder = AlertDialog.Builder(view.context)
+
+        with(builder)
+        {
+            setTitle("Oh no!")
+            setMessage("We couldn't process your address: " + address + "\nPlease try again with a different address.")
+
+            setPositiveButton("OK"){ dialog,which -> null }
+            //setNegativeButton(android.R.string.no, negativeButtonClick)
+            //setNeutralButton("Maybe", neutralButtonClick)
+            show()
+        }
+
+
     }
 }

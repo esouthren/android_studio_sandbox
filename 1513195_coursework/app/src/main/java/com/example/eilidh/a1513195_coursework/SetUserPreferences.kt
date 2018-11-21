@@ -1,6 +1,7 @@
 package com.example.eilidh.a1513195_coursework
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.View
 import android.content.SharedPreferences
 import android.os.Handler
 import android.os.Message
+import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.widget.EditText
 import javax.security.auth.callback.Callback
@@ -65,10 +67,9 @@ class SetUserPreferences : AppCompatActivity(), Callback {
             val editText: EditText = findViewById<EditText>(editTextIds[editIndex])
             val currentText = editText.text.toString()
             if (currentText.length > 1) {
-                Log.i("debug", "found a value!")
                 prefs!!.setPrefAddress(editIndex, currentText)
                 // latlong is set from within thread
-                getLatLong(currentText, editIndex, prefs!!)
+                getLatLong(currentText, editIndex, prefs!!, view)
             } else {
                 prefs!!.setPrefAddress(editIndex, "")
                 prefs!!.setPrefLatLong(editIndex, "")
@@ -103,9 +104,9 @@ class SetUserPreferences : AppCompatActivity(), Callback {
         displayUserPreferences()
     }
 
-    fun getLatLong(address: String, index: Int, prefs: Prefs) {
-        val locationAddress = GeocodingLocation()
+    fun getLatLong(address: String, index: Int, prefs: Prefs, view: View) {
+        val locationAddress = GeocodingLocation(this@SetUserPreferences)
         locationAddress.getAddressFromLocation(address,
-                applicationContext, index, prefs)
+                applicationContext, index, prefs, view)
     }
 }
