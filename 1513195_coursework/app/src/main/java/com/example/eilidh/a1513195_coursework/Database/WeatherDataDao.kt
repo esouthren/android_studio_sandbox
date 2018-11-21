@@ -1,4 +1,4 @@
-package com.example.eilidh.a1513195_coursework
+package com.example.eilidh.a1513195_coursework.Database
 
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert

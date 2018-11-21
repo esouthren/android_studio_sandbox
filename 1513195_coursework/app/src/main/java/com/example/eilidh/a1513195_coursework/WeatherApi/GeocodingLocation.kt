@@ -1,16 +1,13 @@
-package com.example.eilidh.a1513195_coursework
+package com.example.eilidh.a1513195_coursework.WeatherApi
 
 
 import android.app.Activity
 import android.content.Context
-import android.location.Address
 import android.location.Geocoder
-import android.os.Bundle
-import android.os.Handler
-import android.os.Message
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.View
+import com.example.eilidh.a1513195_coursework.UserPreferences.Prefs
 
 import java.io.IOException
 import java.util.Locale

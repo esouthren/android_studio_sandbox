@@ -2,22 +2,26 @@ package com.example.eilidh.a1513195_coursework
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.eilidh.a1513195_coursework.Database.DbWorkerThread
+import com.example.eilidh.a1513195_coursework.Database.FillDatabase
+import com.example.eilidh.a1513195_coursework.Database.WeatherDatabase
+import com.example.eilidh.a1513195_coursework.UserPreferences.Prefs
+import com.example.eilidh.a1513195_coursework.UserPreferences.SetUserPreferences
+import com.example.eilidh.a1513195_coursework.WeatherApi.ApiData
 
 import com.google.gson.Gson
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 
 import org.json.JSONObject
-import java.lang.Math.round
+import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,19 +32,20 @@ class MainActivity : AppCompatActivity() {
 
     private var mDb: WeatherDatabase? = null
     lateinit var fb: FillDatabase
+    private var onlineChecker: IsOnline = IsOnline()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme_NoActionBar)
+        //setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        onlineChecker = IsOnline()
         prefs = Prefs(this)
         mDbWorkerThread = DbWorkerThread("dbWorkerThread")
         mDbWorkerThread.start()
 
 
         mDb = WeatherDatabase.getInstance(this)
-        fb = FillDatabase(mDb!!, mDbWorkerThread, prefs!!,this@MainActivity)
+        fb = FillDatabase(mDb!!, mDbWorkerThread, prefs!!, this@MainActivity)
 
         fb.displayDbData()
         prefs!!.setCurrentPrefView(0)
@@ -95,29 +100,36 @@ class MainActivity : AppCompatActivity() {
 
     fun updateWeatherData(view: View) {
         Log.i("debug", "Refresh Data button pressed")
-        // check to see if there are user preferences
-        val userPreferences = prefs?.getNumberOfPreferences()
-        if (userPreferences == 0) {
-            // display popup error message
-            Log.i("debug", "no preferences!")
-        } else {
-            // todo check internet connection before clearing database
-            // don't call aPIs unless there's an internet connection
-            fb.clearDatabase()
+        // check is user is online
+        if (onlineChecker.isOnline()) {
+            // check to see if there are user preferences
+            val userPreferences = prefs?.getNumberOfPreferences()
+            if (userPreferences == 0) {
+                // display popup error message
+                Log.i("debug", "no preferences!")
+            } else {
+                // todo check internet connection before clearing database
+                // don't call aPIs unless there's an internet connection
+                fb.clearDatabase()
 
-            val task = Runnable {
-                // call api for each user preference
-                for (i in 0..9) {
-                    var p = prefs?.getPrefLatLong(i)
-                    if (p!!.length > 1) {
-                        // if a lat/long exists
-                        val pSplit = p.split("\n")
-                        val address = prefs!!.getPrefAddress(i)
-                        callApi(pSplit[0], pSplit[1], address)
+                val task = Runnable {
+                    // call api for each user preference
+                    for (i in 0..9) {
+                        var p = prefs?.getPrefLatLong(i)
+                        if (p!!.length > 1) {
+                            // if a lat/long exists
+                            val pSplit = p.split("\n")
+                            val address = prefs!!.getPrefAddress(i)
+                            callApi(pSplit[0], pSplit[1], address)
+                        }
                     }
                 }
+                mDbWorkerThread.postTask(task)
             }
-            mDbWorkerThread.postTask(task)
+        } else {
+            onlineChecker.displayOfflineError(view)
         }
     }
+
+
 }

@@ -1,17 +1,14 @@
-package com.example.eilidh.a1513195_coursework
+package com.example.eilidh.a1513195_coursework.UserPreferences
 
-import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 
-import android.content.SharedPreferences
-import android.os.Handler
-import android.os.Message
-import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.widget.EditText
+import com.example.eilidh.a1513195_coursework.R
+import com.example.eilidh.a1513195_coursework.WeatherApi.GeocodingLocation
+import com.example.eilidh.a1513195_coursework.IsOnline
 import javax.security.auth.callback.Callback
 
 
@@ -19,6 +16,8 @@ import javax.security.auth.callback.Callback
 
 
 class SetUserPreferences : AppCompatActivity(), Callback {
+
+    private var onlineChecker: IsOnline = IsOnline()
 
     var editTextIds = arrayOf(R.id.user_pref_1,
             R.id.user_pref_2,
@@ -39,6 +38,7 @@ class SetUserPreferences : AppCompatActivity(), Callback {
         setContentView(R.layout.user_preferences)
         prefs = Prefs(this)
         displayUserPreferences()
+        onlineChecker = IsOnline()
 
     }
 
@@ -51,8 +51,6 @@ class SetUserPreferences : AppCompatActivity(), Callback {
             editText.setText(prefs?.getPrefAddress(prefIndex))
 
             if(prefs!!.getPrefAddress(prefIndex).length > 1) {
-                Log.i("debug", "display prefs: " + prefs!!.getPrefAddress(prefIndex))
-
                 editText.setText(prefs!!.getPrefAddress(prefIndex))
                 editText.visibility = View.VISIBLE
                 boxIndex++
@@ -63,17 +61,24 @@ class SetUserPreferences : AppCompatActivity(), Callback {
     }
 
     fun updatePreferences(view: View) {
-        for(editIndex in 0..9) {
-            val editText: EditText = findViewById<EditText>(editTextIds[editIndex])
-            val currentText = editText.text.toString()
-            if (currentText.length > 1) {
-                prefs!!.setPrefAddress(editIndex, currentText)
-                // latlong is set from within thread
-                getLatLong(currentText, editIndex, prefs!!, view)
-            } else {
-                prefs!!.setPrefAddress(editIndex, "")
-                prefs!!.setPrefLatLong(editIndex, "")
+        // check if user is online
+        if(onlineChecker.isOnline()) {
+            for(editIndex in 0..9) {
+                val editText: EditText = findViewById<EditText>(editTextIds[editIndex])
+                val currentText = editText.text.toString()
+                if (currentText.length > 1) {
+                    prefs!!.setPrefAddress(editIndex, currentText)
+                    // latlong is set from within thread
+                    getLatLong(currentText, editIndex, prefs!!, view)
+                } else {
+                    prefs!!.setPrefAddress(editIndex, "")
+                    prefs!!.setPrefLatLong(editIndex, "")
+                }
             }
+
+        }
+        else {
+            onlineChecker.displayOfflineError(view)
         }
         //displayUserPreferences()
     }
