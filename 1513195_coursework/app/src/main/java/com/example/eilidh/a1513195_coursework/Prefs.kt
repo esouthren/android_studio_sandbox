@@ -43,6 +43,16 @@ class Prefs (context: Context)  {
         this.preferences.edit().putString(CURRENT_PREF_VIEW, v)
     }
 
+    fun getNumberOfPreferences(): Int {
+        var count = 0
+        for(i in 0..9) {
+            if(this.preferences.getString(PREFERENCES[i], "") !=" ") {
+                count++
+            }
+        }
+        return count
+    }
+
 
     fun clear() {
         for(i in 0..9) {

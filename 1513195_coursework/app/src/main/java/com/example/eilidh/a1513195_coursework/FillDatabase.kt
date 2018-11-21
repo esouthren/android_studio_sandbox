@@ -24,18 +24,7 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
 
     fun addDataToDatabase(data: ApiData.CoreData, context: Context, address: String) {
         Log.i("debug", "4) adddataToDatabase")
-        // clear database
-        //clearDatabase()
-        //Log.i("debug", "adding data to database")
-        //fetchWeatherDataFromDb(context)
-        //Log.i("debug", data.toString())
-
-        // coredata
-
-
-        // data within each hour
         var hourCount = 0
-
 
         for (thisHour in data.hourly.data) {
             val weatherData = WeatherData(
@@ -62,29 +51,6 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
             insertWeatherDataInDb(weatherData)
             hourCount++
         }
-
-        //fetchWeatherDataFromDb(context)
-
-
-    }
-
-    private fun fetchWeatherDataFromDb(context: Context) {
-
-
-        val task = Runnable {
-            val weatherData =
-                    mDb?.weatherDao()?.getAll()
-
-            if (weatherData == null || weatherData?.size == 0) {
-                Log.i("debug", "no data in database :(")
-            } else {
-                Log.i("debug", "there's some data! Rows: " + weatherData.size)
-
-
-            }
-        }
-        mDbWorkerThread.postTask(task)
-
     }
 
     private fun insertWeatherDataInDb(weatherData: WeatherData) {
@@ -95,20 +61,12 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
         mDbWorkerThread.postTask(task)
     }
 
-    fun onDestroy() {
-        WeatherDatabase.destroyInstance()
-        mDbWorkerThread.quit()
-        //super.onDestroy()
-    }
-
-
     fun isConnectedToInternet(context: Context): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         var activeNetworkInfo: NetworkInfo? = null
         activeNetworkInfo = cm.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting
     }
-
 
     fun clearDatabase() {
         val task = Runnable { mDb?.weatherDao()?.deleteAll() }
@@ -125,16 +83,14 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
     }
 
     fun displayDbData() {
-
-        Log.i("debug", "6 part 2) displayData: displaying data in DB...")
-        // check db for data, if it contains data, display it?
-
-        val currentPlace =  prefs!!.getPrefAddress(prefs!!.getCurrentPrefView())
-
-        // get 0th (current) hour
-        getPreferenceWeather(currentPlace)
-        //Log.i("debug", rightnow!!.size.toString())
-        //Log.i("debug", rightnow!!.toString())
+        val userPreferences = prefs?.getNumberOfPreferences()
+        if (userPreferences == 0) {
+            // display popup error message
+            Log.i("debug", "no preferences!")
+        } else {
+            val currentPlace = prefs!!.getPrefAddress(prefs!!.getCurrentPrefView())
+            getPreferenceWeather(currentPlace)
+        }
 
     }
 
@@ -147,7 +103,7 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
                 activity.runOnUiThread(
                         object : Runnable {
                             override fun run() {
-                                //displayEmptyDatabaseScreen()
+                                displayEmptyDatabaseScreen()
                             }
                         }
                 )
@@ -190,6 +146,17 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
     fun setPreferenceRainChance(chance: Double) {
         val edit = Math.round(chance * 10)
         activity.findViewById<TextView>(R.id.preference_chance_rain).setText("$edit%")
+
+    }
+
+    fun displayEmptyDatabaseScreen() {
+        Log.i("debug", "empty database screen")
+        // hide windows and add a text box saying 'no data stored'
+        activity.findViewById<TextView>(R.id.preference_title).setText("")
+        activity.findViewById<TextView>(R.id.preference_summary).setText("No Data to Display")
+        activity.findViewById<TextView>(R.id.preference_temp).setText("")
+        activity.findViewById<TextView>(R.id.preference_chance_rain).setText("")
+
 
     }
 
