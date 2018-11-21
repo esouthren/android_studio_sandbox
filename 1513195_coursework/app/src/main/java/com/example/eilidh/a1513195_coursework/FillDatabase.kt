@@ -8,6 +8,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.support.v4.content.ContextCompat.getSystemService
 import android.util.Log
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.google.gson.Gson
@@ -118,6 +119,7 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
                                 Log.i("debug", "TemperaturE: " + currentWeather.get(0).temperature)
                                 setPreferenceTemp(currentWeather.get(0).temperature!!)
                                 setPreferenceRainChance(currentWeather.get(0).precipProbability!!)
+                                setIcon(currentWeather.get(0).icon!!)
                             }
                         }
                 )
@@ -149,6 +151,24 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
 
     }
 
+    fun setIcon(weatherType: String) {
+        var icon = R.mipmap.cloudy
+        when(weatherType) {
+            "clear-day" -> icon = R.mipmap.sun
+            "clear-night" -> icon = R.mipmap.sun
+            "rain" -> icon = R.mipmap.rain
+            "snow" -> icon = R.mipmap.snow
+            "sleet" -> icon = R.mipmap.sleet
+            "wind" -> icon = R.mipmap.partly_cloudy
+            "fog" -> icon = R.mipmap.foggy
+            "cloudy" -> icon = R.mipmap.cloudy
+            "partly-cloudy-day" -> icon = R.mipmap.partly_cloudy
+            "partly-cloudy-night" -> icon = R.mipmap.partly_cloudy
+            else -> icon = R.mipmap.partly_cloudy
+        }
+        activity.findViewById<ImageView>(R.id.preference_icon).setImageResource(icon)
+    }
+
     fun displayEmptyDatabaseScreen() {
         Log.i("debug", "empty database screen")
         // hide windows and add a text box saying 'no data stored'
@@ -157,8 +177,9 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
         activity.findViewById<TextView>(R.id.preference_temp).setText("")
         activity.findViewById<TextView>(R.id.preference_chance_rain).setText("")
 
-
     }
+
+
 
 
 }
