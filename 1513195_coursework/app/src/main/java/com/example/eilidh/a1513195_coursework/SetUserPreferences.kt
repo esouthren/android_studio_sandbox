@@ -26,6 +26,7 @@ class SetUserPreferences : AppCompatActivity(), Callback {
             R.id.user_pref_10)
 
     var prefs: UserPreferences? = null
+    var onlineChecker: OnlineChecker = OnlineChecker()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -57,19 +58,24 @@ class SetUserPreferences : AppCompatActivity(), Callback {
     }
 
     fun updatePreferences(view: View) {
-        for(editIndex in 0..9) {
-            val editText: EditText = findViewById<EditText>(editTextIds[editIndex])
-            val currentText = editText.text.toString()
-            if (currentText.length > 1) {
-                prefs!!.setPrefAddress(editIndex, currentText)
-                // latlong is set from within thread
-                getLatLong(currentText, editIndex, prefs!!, view)
-            } else {
-                prefs!!.setPrefAddress(editIndex, "")
-                prefs!!.setPrefLatLong(editIndex, "")
+        // check for connectivity
+        if(onlineChecker.isOnline(this@SetUserPreferences)) {
+            for (editIndex in 0..9) {
+                val editText: EditText = findViewById<EditText>(editTextIds[editIndex])
+                val currentText = editText.text.toString()
+                if (currentText.length > 1) {
+                    prefs!!.setPrefAddress(editIndex, currentText)
+                    // latlong is set from within thread
+                    getLatLong(currentText, editIndex, prefs!!, view)
+                } else {
+                    prefs!!.setPrefAddress(editIndex, "")
+                    prefs!!.setPrefLatLong(editIndex, "")
+                }
             }
         }
-        //displayUserPreferences()
+        else {
+            onlineChecker.displayOfflineError(view)
+        }
     }
 
     fun deletePreference() {

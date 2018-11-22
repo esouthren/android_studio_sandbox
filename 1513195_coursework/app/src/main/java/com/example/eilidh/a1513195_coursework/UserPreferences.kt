@@ -3,6 +3,7 @@ package com.example.eilidh.a1513195_coursework
 import android.content.Context
 import android.content.SharedPreferences
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.View
 
 class UserPreferences (context: Context)  {
@@ -41,6 +42,7 @@ class UserPreferences (context: Context)  {
         }
 
     fun hasPreferences(): Boolean {
+        Log.i("debug", "number of preferences: " + getNumberOfPreferences())
         if(getNumberOfPreferences() == 0) {
             return false
         }
@@ -55,7 +57,8 @@ class UserPreferences (context: Context)  {
     fun getNumberOfPreferences(): Int {
         var count = 0
         for(i in 0..9) {
-            if(this.preferences.getString(PREFERENCES[i], "") !=" ") {
+            Log.i("debug", "pref: " + this.preferences.getString(PREFERENCES[i], ""))
+            if(this.preferences.getString(PREFERENCES[i], "").length > 1) {
                 count++
             }
         }

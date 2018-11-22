@@ -94,11 +94,11 @@ class MainActivity : AppCompatActivity() {
 
         Log.i("debug", "Refresh Data button pressed")
         // check to see if there are user preferences
-        if(prefs!!.hasPreferences()) {
+        if(!prefs!!.hasPreferences()) {
             // display error about having no preferences
             prefs!!.displayNoPreferencesError(view)
         } else {
-            if (onlineChecker.isOnline()) {
+            if (onlineChecker.isOnline(this@MainActivity)) {
                 // todo check internet connection before clearing database
                 // don't call aPIs unless there's an internet connection
                 fb.clearDatabase()
