@@ -76,6 +76,9 @@ class SetUserPreferences : AppCompatActivity(), Callback {
         else {
             onlineChecker.displayOfflineError(view)
         }
+
+        // update database with new data
+        //MainActivity.updateWeatherData(view)
     }
 
     fun deletePreference() {

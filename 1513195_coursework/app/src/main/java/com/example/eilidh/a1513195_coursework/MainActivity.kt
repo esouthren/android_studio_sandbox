@@ -9,6 +9,7 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import kotlinx.coroutines.*
 
 import com.google.gson.Gson
 
@@ -39,9 +40,52 @@ class MainActivity : AppCompatActivity() {
         mDb = WeatherDatabase.getInstance(this)
         fb = FillDatabase(mDb!!, mDbWorkerThread, prefs!!, this@MainActivity)
 
-        fb.displayDbData()
+        fb.displayDbData(this@MainActivity)
         prefs!!.setCurrentPrefView(0)
         Log.i("debug", "current pref view: " + prefs!!.getCurrentPrefView())
+
+    }
+
+    fun changePreferenceViewLeft(view: View) {
+        changePreferenceView("left")
+    }
+
+    fun changePreferenceViewRight(view: View) {
+        changePreferenceView("right")
+    }
+
+
+    fun changePreferenceView(direction: String) {
+        // move the view to another user preference
+        val currentPlace = prefs!!.getPrefAddress(prefs!!.getCurrentPrefView())
+        val currentPrefView = prefs!!.getCurrentPrefView()
+        if(direction.equals("left")) {
+            if(currentPrefView>0) {
+             //   launch {
+                    prefs!!.setCurrentPrefView((currentPrefView - 1))
+                    Log.i("debug", "new preference: " + prefs!!.getPrefAddress(prefs!!.getCurrentPrefView()))
+              //  }
+                fb.displayDbData(this@MainActivity)
+
+            }
+            else {
+                Log.i("debug", "At preference 0, can't go left")
+            }
+        } else
+            if(currentPrefView < 9) {
+                val nextPref = prefs!!.getPrefAddress(currentPrefView+1)
+                if(nextPref.length > 1) {
+                    val newPref = currentPrefView + 1
+                    prefs!!.setCurrentPrefView(newPref)
+                    Log.i("debug", "new preference: " + prefs!!.getPrefAddress(prefs!!.getCurrentPrefView()))
+                    fb.displayDbData(this@MainActivity)
+                } else {
+                    Log.i("debug", "No data in the next preference slot")
+                }
+            }
+            else {
+             Log.i("debug", "At preference 9, can't go right")
+            }
 
     }
 
