@@ -9,7 +9,9 @@ import android.view.Gravity
 import android.widget.*
 import java.util.*
 import android.widget.LinearLayout
-
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs: UserPreferences, activity: Activity) {
@@ -53,7 +55,8 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
 
     private fun insertWeatherDataInDb(weatherData: WeatherData, context: Context) {
         Log.i("debug", "5) insertWeatherDataInDb")
-        val task = Runnable { mDb?.weatherDao()?.insert(weatherData)
+        val task = Runnable {
+            mDb?.weatherDao()?.insert(weatherData)
             displayDbData(context)
         }
         mDbWorkerThread.postTask(task)
@@ -72,10 +75,9 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
     }
 
     fun convertToCelcius(f: Double?): Double {
-        if(f==null) {
+        if (f == null) {
             return 0.0
-        }
-        else {
+        } else {
             return ((f - 32.0) * (5.0 / 9.0))
         }
     }
@@ -89,13 +91,11 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
             val currentPlace = prefs!!.getPrefAddress(prefs!!.getCurrentPrefView())
             getPreferenceWeather(currentPlace, context)
         }
-
     }
-
 
     fun getPreferenceWeather(address: String, context: Context) {
         val task = Runnable {
-            val currentWeather = mDb?.weatherDao()?.getSinglePreferenceData(address)
+            var currentWeather = mDb?.weatherDao()?.getSinglePreferenceData(address)
             if (currentWeather!!.isEmpty()) {
                 Log.i("debug", "getPreferenceWeather: no database data ")
                 activity.runOnUiThread(
@@ -110,6 +110,7 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
                 activity.runOnUiThread(
                         object : Runnable {
                             override fun run() {
+                                currentWeather = currentWeather.sortedBy { it.time }
                                 Log.i("debug", "getPreferenceWeather: got current weather: " + currentWeather!!.get(0).summary)
                                 setPreferenceTitle(currentWeather.get(0).placeString!!)
                                 setPreferenceSummary(currentWeather.get(0).summary!!)
@@ -154,8 +155,8 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
         activity.findViewById<ImageView>(R.id.preference_icon).setImageResource(getIcon(weatherType))
     }
 
-    fun getIcon(weatherType: String) : Int {
-        when(weatherType) {
+    fun getIcon(weatherType: String): Int {
+        when (weatherType) {
             "clear-day" -> return R.mipmap.sun
             "clear-night" -> return R.mipmap.sun
             "rain" -> return R.mipmap.rain
@@ -183,11 +184,10 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
     fun setHourlyScrollViewContents(data: List<WeatherData>, context: Context) {
         Log.i("debug", "setting hourly scroll view")
         val scrollView = activity.findViewById<LinearLayout>(R.id.hourly_linearView)
-        for(i in 1..23) {
+        for (i in 1..23) {
             val hourSlot: LinearLayout = LinearLayout(context)
             hourSlot.setOrientation(LinearLayout.VERTICAL)
             val hourSlotParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT)
-            //hourSlot.layoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
             hourSlot.layoutParams = hourSlotParams
             hourSlot.gravity = Gravity.CENTER
 
@@ -196,7 +196,8 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
             timeLayout.setLayoutParams(timeLayoutParams)
             val hourTime = TextView(context)
             hourTime.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
-            hourTime.setText("Time")
+            val time = getHourString(data.get(i).time!!)
+            hourTime.setText(time)
             timeLayout.addView(hourTime)
 
             val iconLayout = RelativeLayout(context)
@@ -211,28 +212,30 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
             val tempLayout = RelativeLayout(context)
             val tempLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
             tempLayout.setLayoutParams(tempLayoutParams)
-            //tempLayout.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
             val hourTemp = TextView(context)
-            //hourTemp.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
             val rounded = Math.round(data.get(i).temperature!!)
             val degree = Typography.degree
 
             hourTemp.setText("$rounded$degree")
-            //hourTemp.setEms(3)
             tempLayout.addView(hourTemp)
-            //hourTemp.setText("brashh!!")
             hourSlot.addView(timeLayout)
             hourSlot.addView(iconLayout)
             hourSlot.addView(tempLayout)
 
-//setting image position
-           // icon.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                //    LinearLayout.LayoutParams.WRAP_CONTENT))
             scrollView.addView(hourSlot)
         }
     }
 
-
+    fun getHourString(time: String): String {
+        try {
+            val sdf = SimpleDateFormat("HHmm")
+            val netDate = Date(time.toLong() * 1000)
+            Log.i("debug", "converting time: " + sdf.format(netDate))
+            return sdf.format(netDate)
+        } catch (e: Exception) {
+            return e.toString()
+        }
+    }
 
 
 }
