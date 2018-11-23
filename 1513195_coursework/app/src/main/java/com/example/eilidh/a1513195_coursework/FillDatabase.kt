@@ -111,14 +111,13 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
                         object : Runnable {
                             override fun run() {
                                 currentWeather = currentWeather.sortedBy { it.time }
-                                Log.i("debug", "getPreferenceWeather: got current weather: " + currentWeather!!.get(0).summary)
+                                setHourlyScrollViewContents(currentWeather)
                                 setPreferenceTitle(currentWeather.get(0).placeString!!)
                                 setPreferenceSummary(currentWeather.get(0).summary!!)
-                                Log.i("debug", "TemperaturE: " + currentWeather.get(0).temperature)
                                 setPreferenceTemp(currentWeather.get(0).temperature!!)
                                 setPreferenceRainChance(currentWeather.get(0).precipProbability!!)
                                 setIcon(currentWeather.get(0).icon!!)
-                                setHourlyScrollViewContents(currentWeather, context)
+
                             }
                         }
                 )
@@ -151,7 +150,6 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
     }
 
     fun setIcon(weatherType: String) {
-
         activity.findViewById<ImageView>(R.id.preference_icon).setImageResource(getIcon(weatherType))
     }
 
@@ -181,38 +179,37 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
 
     }
 
-    fun setHourlyScrollViewContents(data: List<WeatherData>, context: Context) {
-        Log.i("debug", "setting hourly scroll view")
+    fun setHourlyScrollViewContents(data: List<WeatherData>) {
         val scrollView = activity.findViewById<LinearLayout>(R.id.hourly_linearView)
         for (i in 1..23) {
-            val hourSlot: LinearLayout = LinearLayout(context)
+            val hourSlot: LinearLayout = LinearLayout(activity)
             hourSlot.setOrientation(LinearLayout.VERTICAL)
             val hourSlotParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT)
             hourSlot.layoutParams = hourSlotParams
             hourSlot.gravity = Gravity.CENTER
 
-            val timeLayout = RelativeLayout(context)
+            val timeLayout = RelativeLayout(activity)
             val timeLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
             timeLayout.setLayoutParams(timeLayoutParams)
-            val hourTime = TextView(context)
+            val hourTime = TextView(activity)
             hourTime.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
             val time = getHourString(data.get(i).time!!)
             hourTime.setText(time)
             timeLayout.addView(hourTime)
 
-            val iconLayout = RelativeLayout(context)
+            val iconLayout = RelativeLayout(activity)
             val iconLayoutParams = LinearLayout.LayoutParams(100, 100, 1f)
             iconLayout.setLayoutParams(iconLayoutParams)
-            val icon = ImageView(context)
+            val icon = ImageView(activity)
 
-            icon.setImageResource(getIcon(data.get(i).summary!!))
+            icon.setImageResource(getIcon(data.get(i).icon!!))
             iconLayout.addView(icon)
 
 
-            val tempLayout = RelativeLayout(context)
+            val tempLayout = RelativeLayout(activity)
             val tempLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
             tempLayout.setLayoutParams(tempLayoutParams)
-            val hourTemp = TextView(context)
+            val hourTemp = TextView(activity)
             val rounded = Math.round(data.get(i).temperature!!)
             val degree = Typography.degree
 
@@ -230,7 +227,6 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
         try {
             val sdf = SimpleDateFormat("HHmm")
             val netDate = Date(time.toLong() * 1000)
-            Log.i("debug", "converting time: " + sdf.format(netDate))
             return sdf.format(netDate)
         } catch (e: Exception) {
             return e.toString()

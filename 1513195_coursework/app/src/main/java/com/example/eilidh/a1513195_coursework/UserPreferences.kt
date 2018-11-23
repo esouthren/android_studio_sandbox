@@ -57,7 +57,6 @@ class UserPreferences (context: Context)  {
     fun getNumberOfPreferences(): Int {
         var count = 0
         for(i in 0..9) {
-            Log.i("debug", "pref: " + this.preferences.getString(PREFERENCES[i], ""))
             if(this.preferences.getString(PREFERENCES[i], "").length > 1) {
                 count++
             }

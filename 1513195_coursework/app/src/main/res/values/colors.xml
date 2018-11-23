@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#00c6f5</color>
     <color name="colorAccent">#ffa04f</color>
     <color name="themeBlue">#00c6f5</color>
+    <color name="themeAccentBlue">#0093f5</color>
     <color name="themeLightBlue">#f1f9ff</color>
     <color name="themeOrange">#ffa04f</color>
 </resources>
