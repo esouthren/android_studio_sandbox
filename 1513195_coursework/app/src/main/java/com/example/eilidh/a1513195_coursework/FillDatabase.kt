@@ -6,20 +6,100 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.util.Log
 import android.view.Gravity
+import android.view.View
 import android.widget.*
 import java.util.*
 import android.widget.LinearLayout
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import com.google.gson.Gson
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
-class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs: UserPreferences, activity: Activity) {
+class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs: UserPreferences, activity: Activity, context: Context) {
 
+    val TAG = "debug"
+    val APIKEY = "bd233fef7ea7953a843bbbb58fc087ba"
     private var mDbWorkerThread = mDbWorkerThread
     private var mDb = mDb
     private var prefs = prefs
     private var activity = activity
+    var onlineChecker: OnlineChecker = OnlineChecker()
+    var context = context
+
+    fun updateWeatherData(view: View) {
+
+        Log.i("debug", "Refresh Data button pressed")
+        // check to see if there are user preferences
+        if(!prefs!!.hasPreferences()) {
+            // display error about having no preferences
+            prefs!!.displayNoPreferencesError(view)
+        } else {
+            if (onlineChecker.isOnline(context)) {
+                clearDatabase()
+
+                val task = kotlinx.coroutines.Runnable {
+                    // call api for each user preference
+                    for (i in 0..9) {
+                        var p = prefs?.getPrefLatLong(i)
+                        if (p!!.length > 1) {
+                            // if a lat/long exists
+                            val pSplit = p.split("\n")
+                            val address = prefs!!.getPrefAddress(i)
+                            callApi(pSplit[0], pSplit[1], address)
+                        }
+                    }
+                }
+                mDbWorkerThread.postTask(task)
+            } else {
+                onlineChecker.displayOfflineError(view)
+            }
+        }
+    }
+
+    fun callApi(lat: String, long: String, address: String) {
+        Log.i("debug", "2) CallApi()")
+        val web = "https://api.darksky.net/forecast"
+        val excludes = "exclude=minutely,alerts,flags" // things to remove from the api call
+        val time = "2018-11-15T12:30:00Z"
+        val slash = "/"
+        val flag = "?"
+        val delim = ","
+        // api gets called here
+        //Log.i(TAG, "API being called!")
+        val queue = Volley.newRequestQueue(context)
+        val url = "$web$slash$APIKEY$slash$lat$delim$long$delim$time$flag$excludes"
+        Log.i(TAG, url)
+        val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
+                Response.Listener { response ->
+                    val text = response
+                    Log.i(TAG, text.toString())
+                    parseJsonDataToApiData(response, address)
+                },
+                Response.ErrorListener { Log.i(TAG, "API Fail :( ") })
+
+        queue.add(jsonObjectRequest)
+
+    }
+
+
+    fun parseJsonDataToApiData(data: JSONObject, address: String) {
+        Log.i("debug", "3) parseJsonDataToApiData")
+        // textView.text = data["temperature"].toString()
+        // textView.text = data["temperature"].toString()
+        var gson = Gson()
+        //Log.i("debug", data.toString())
+        // fill an ApiData object with Json data
+        var parsedApiData = gson.fromJson(data.toString(), ApiData.CoreData::class.java)
+
+        addDataToDatabase(parsedApiData, context, address)
+
+    }
 
     fun addDataToDatabase(data: ApiData.CoreData, context: Context, address: String) {
         var hourCount = 0

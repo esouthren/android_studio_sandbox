@@ -30,7 +30,7 @@
 
     <EditText
         android:id="@+id/user_pref_4"
-        android:layout_width="293dp"
+        android:layout_width="330dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -48,6 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
         android:text="Location Preferences"
         android:textColor="@android:color/background_dark"
         android:textSize="24sp"
@@ -57,7 +58,7 @@
 
     <EditText
         android:id="@+id/user_pref_5"
-        android:layout_width="293dp"
+        android:layout_width="330dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -71,7 +72,7 @@
 
     <EditText
         android:id="@+id/user_pref_6"
-        android:layout_width="293dp"
+        android:layout_width="330dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -85,7 +86,7 @@
 
     <EditText
         android:id="@+id/user_pref_7"
-        android:layout_width="293dp"
+        android:layout_width="330dp"
         android:layout_height="31dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -99,7 +100,7 @@
 
     <EditText
         android:id="@+id/user_pref_1"
-        android:layout_width="293dp"
+        android:layout_width="330dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="15dp"
@@ -113,10 +114,11 @@
 
     <EditText
         android:id="@+id/user_pref_2"
-        android:layout_width="293dp"
+        android:layout_width="330dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:background="@drawable/preferences_text_box"
         android:ems="10"
         android:inputType="textPersonName"
@@ -127,7 +129,7 @@
 
     <EditText
         android:id="@+id/user_pref_3"
-        android:layout_width="293dp"
+        android:layout_width="330dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -141,7 +143,7 @@
 
     <EditText
         android:id="@+id/user_pref_8"
-        android:layout_width="293dp"
+        android:layout_width="330dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -155,7 +157,7 @@
 
     <EditText
         android:id="@+id/user_pref_9"
-        android:layout_width="293dp"
+        android:layout_width="330dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -169,7 +171,7 @@
 
     <EditText
         android:id="@+id/user_pref_10"
-        android:layout_width="293dp"
+        android:layout_width="330dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"

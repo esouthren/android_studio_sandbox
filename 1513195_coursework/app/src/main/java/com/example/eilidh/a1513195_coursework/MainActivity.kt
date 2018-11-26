@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
 
         mDb = WeatherDatabase.getInstance(this)
-        fb = FillDatabase(mDb!!, mDbWorkerThread, prefs!!, this@MainActivity)
+        fb = FillDatabase(mDb!!, mDbWorkerThread, prefs!!, this@MainActivity, applicationContext)
 
         fb.displayDbData(this@MainActivity)
         prefs!!.setCurrentPrefView(0)
@@ -51,6 +51,10 @@ class MainActivity : AppCompatActivity() {
 
     fun changePreferenceViewRight(view: View) {
         changePreferenceView("right")
+    }
+
+    fun updateWeatherData(view: View) {
+        fb.updateWeatherData(view)
     }
 
 
@@ -85,43 +89,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun callApi(lat: String, long: String, address: String) {
-        Log.i("debug", "2) CallApi()")
-        val web = "https://api.darksky.net/forecast"
-        val excludes = "exclude=minutely,alerts,flags" // things to remove from the api call
-        val time = "2018-11-15T12:30:00Z"
-        val slash = "/"
-        val flag = "?"
-        val delim = ","
-        // api gets called here
-        //Log.i(TAG, "API being called!")
-        val queue = Volley.newRequestQueue(this)
-        val url = "$web$slash$APIKEY$slash$lat$delim$long$delim$time$flag$excludes"
-        Log.i(TAG, url)
-        val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
-                Response.Listener { response ->
-                    val text = response
-                    Log.i(TAG, text.toString())
-                    parseJsonDataToApiData(response, address)
-                },
-                Response.ErrorListener { Log.i(TAG, "API Fail :( ") })
 
-        queue.add(jsonObjectRequest)
 
-    }
-
-    fun parseJsonDataToApiData(data: JSONObject, address: String) {
-        Log.i("debug", "3) parseJsonDataToApiData")
-        // textView.text = data["temperature"].toString()
-        // textView.text = data["temperature"].toString()
-        var gson = Gson()
-        //Log.i("debug", data.toString())
-        // fill an ApiData object with Json data
-        var parsedApiData = gson.fromJson(data.toString(), ApiData.CoreData::class.java)
-
-        fb.addDataToDatabase(parsedApiData, applicationContext, address)
-
-    }
 
     fun openPreferences(view: View) {
         // open user preferences activity
@@ -130,35 +99,13 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun updateWeatherData(view: View) {
+    fun openSearch(view: View) {
+        // open search feature
+        val intent = Intent(this, SearchWeather::class.java).apply {
 
-        Log.i("debug", "Refresh Data button pressed")
-        // check to see if there are user preferences
-        if(!prefs!!.hasPreferences()) {
-            // display error about having no preferences
-            prefs!!.displayNoPreferencesError(view)
-        } else {
-            if (onlineChecker.isOnline(this@MainActivity)) {
-                // todo check internet connection before clearing database
-                // don't call aPIs unless there's an internet connection
-                fb.clearDatabase()
-
-                val task = Runnable {
-                    // call api for each user preference
-                    for (i in 0..9) {
-                        var p = prefs?.getPrefLatLong(i)
-                        if (p!!.length > 1) {
-                            // if a lat/long exists
-                            val pSplit = p.split("\n")
-                            val address = prefs!!.getPrefAddress(i)
-                            callApi(pSplit[0], pSplit[1], address)
-                        }
-                    }
-                }
-                mDbWorkerThread.postTask(task)
-            } else {
-                onlineChecker.displayOfflineError(view)
-            }
         }
+        startActivity(intent)
     }
+
+
 }

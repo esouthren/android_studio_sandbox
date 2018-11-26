@@ -14,6 +14,10 @@ import javax.security.auth.callback.Callback
 
 class SetUserPreferences : AppCompatActivity(), Callback {
 
+    lateinit var fb: FillDatabase
+    private var mDb: WeatherDatabase? = null
+    private lateinit var mDbWorkerThread: DbWorkerThread
+
     var editTextIds = arrayOf(R.id.user_pref_1,
             R.id.user_pref_2,
             R.id.user_pref_3,
@@ -31,10 +35,15 @@ class SetUserPreferences : AppCompatActivity(), Callback {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.user_preferences)
-        prefs = UserPreferences(this)
-        displayUserPreferences()
 
+        mDb = WeatherDatabase.getInstance(this)
+        mDbWorkerThread = DbWorkerThread("dbWorkerThread")
+        mDbWorkerThread.start()
+        setContentView(R.layout.user_preferences)
+
+        prefs = UserPreferences(this)
+        fb = FillDatabase(mDb!!, mDbWorkerThread, prefs!!, this@SetUserPreferences, applicationContext)
+        displayUserPreferences()
     }
 
     fun displayUserPreferences() {
@@ -46,8 +55,6 @@ class SetUserPreferences : AppCompatActivity(), Callback {
             editText.setText(prefs?.getPrefAddress(prefIndex))
 
             if(prefs!!.getPrefAddress(prefIndex).length > 1) {
-                Log.i("debug", "display prefs: " + prefs!!.getPrefAddress(prefIndex))
-
                 editText.setText(prefs!!.getPrefAddress(prefIndex))
                 editText.visibility = View.VISIBLE
                 boxIndex++
@@ -77,8 +84,7 @@ class SetUserPreferences : AppCompatActivity(), Callback {
             onlineChecker.displayOfflineError(view)
         }
 
-        // update database with new data
-        //MainActivity.updateWeatherData(view)
+        //
     }
 
     fun deletePreference() {
@@ -98,13 +104,20 @@ class SetUserPreferences : AppCompatActivity(), Callback {
     }
 
     fun deleteAllPreferences(view: View) {
-        prefs!!.clear()
-        for(i in 0..9) {
-            val editText: EditText = findViewById<EditText>(editTextIds[i])
-            editText.setText("")
-            prefs!!.setPrefLatLong(i, "")
+        // delete all preferences and data
+        if(onlineChecker.isOnline(this@SetUserPreferences)) {
+            prefs!!.clear()
+            for (i in 0..9) {
+                val editText: EditText = findViewById<EditText>(editTextIds[i])
+                editText.setText("")
+                prefs!!.setPrefLatLong(i, "")
+            }
+            fb.clearDatabase()
+            fb.displayDbData(this@SetUserPreferences)
+            displayUserPreferences()
+        } else {
+            onlineChecker.displayOfflineError(view)
         }
-        displayUserPreferences()
     }
 
     fun getLatLong(address: String, index: Int, prefs: UserPreferences, view: View) {

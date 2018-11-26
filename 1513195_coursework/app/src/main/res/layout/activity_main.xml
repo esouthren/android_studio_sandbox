@@ -66,6 +66,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/btn_preferences2"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:background="@mipmap/search_icon"
+        android:onClick="openSearch"
+        android:scaleType="fitCenter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/btn_move_preferences_left"
         android:layout_width="wrap_content"
@@ -75,7 +87,8 @@
         android:background="@drawable/main_screen_buttons"
         android:onClick="changePreferenceViewLeft"
         android:padding="10dp"
-        android:text="L"
+        android:text="@string/move_preference_view_left"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -104,7 +117,8 @@
         android:background="@drawable/main_screen_buttons"
         android:onClick="changePreferenceViewRight"
         android:padding="10dp"
-        android:text="R"
+        android:text="@string/move_preference_view_right"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
