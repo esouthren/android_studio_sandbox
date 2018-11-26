@@ -3,6 +3,11 @@ package com.example.eilidh.a1513195_coursework
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.Query
+import android.arch.persistence.room.RawQuery
+import android.arch.persistence.db.SupportSQLiteQuery
+
+
+
 
 @Dao
 interface WeatherDataDao {
@@ -24,12 +29,15 @@ interface WeatherDataDao {
     fun getSinglePreferenceData(place: String): List<WeatherData>
 
     @Query("SELECT * FROM weatherData WHERE :attribute = :value")
-    fun getSearchDataEqualTo(attribute: String, value: Float): List<WeatherData>
+    fun getSearchDataEqualTo(attribute: String, value: Double): List<WeatherData>
 
     @Query("SELECT * FROM weatherData WHERE :attribute < :value")
-    fun getSearchDataLessThan(attribute: String, value: Float): List<WeatherData>
+    fun getSearchDataLessThan(attribute: String, value: Double): List<WeatherData>
 
-    @Query("SELECT * FROM weatherData WHERE :attribute > :value")
-    fun getSearchDataGreaterThan(attribute: String, value: Float): List<WeatherData>
+    @Query("SELECT place_string, time, uid, hour, :attribute  FROM weatherData WHERE :attribute > :value")
+    fun getSearchDataGreaterThan(attribute: String, value: Double): List<WeatherData>
+
+    @RawQuery
+    fun getSearchQuery(query: SupportSQLiteQuery): List<WeatherData>
 
 }

@@ -311,7 +311,7 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
         }
     }
 
-    fun searchDataLessThan(attribute: String, value: Float) {
+    fun searchDataLessThan(attribute: String, value: Double) {
         mDb!!.weatherDao().getSearchDataLessThan(attribute, value)
     }
 
