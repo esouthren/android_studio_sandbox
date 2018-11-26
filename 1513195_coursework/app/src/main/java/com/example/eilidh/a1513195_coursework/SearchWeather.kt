@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_search_weather.*
 import javax.security.auth.callback.Callback
-import com.android.volley.Response
 import java.lang.IllegalStateException
 
 class SearchWeather : AppCompatActivity(), Callback, AdapterView.OnItemSelectedListener  {
@@ -31,26 +30,21 @@ class SearchWeather : AppCompatActivity(), Callback, AdapterView.OnItemSelectedL
 
         setContentView(R.layout.activity_search_weather)
 
+        // create spinner of values
         val spinner: Spinner = findViewById(R.id.search_spinner)
-        // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter.createFromResource(
                 this,
                 R.array.search_weather_array,
                 android.R.layout.simple_spinner_item
         ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
             spinner.adapter = adapter
         }
-
         spinner.onItemSelectedListener = this
-
-        //setContentView(R.layout.user_preferences)
-
     }
 
     override fun onItemSelected(parent: AdapterView<*>, view: View, pos: Int, id: Long) {
+        // update UI to reflect selected spinner value
         val selection = parent.getItemAtPosition(pos)
         val units = this.findViewById<TextView>(R.id.search_units)
         val degree = Typography.degree
@@ -66,89 +60,57 @@ class SearchWeather : AppCompatActivity(), Callback, AdapterView.OnItemSelectedL
                 units.setText("")
             }
         }
-        // An item was selected. You can retrieve the selected item using
-        // parent.getItemAtPosition(pos)
     }
 
     override fun onNothingSelected(parent: AdapterView<*>) {
-        // Another interface callback
+        // do nothing
     }
 
     fun displaySearchResults(view: View) {
         var operatorString = ""
         try {
             if (checkRadioOptionSelected()) {
-                //  val task = Runnable {
                 var attribute = search_spinner.selectedItem.toString()
                 attribute = getDatabaseAttribute(attribute)
-                val operator = this.findViewById<RadioGroup>(R.id.RGroup).checkedRadioButtonId
 
+                val operator = this.findViewById<RadioGroup>(R.id.RGroup).checkedRadioButtonId
                 val value = this.findViewById<EditText>(R.id.search_value).text.toString().toDouble()
                 val emptyWeather = WeatherData()
-                Log.i("debug", "operator: $operator")
                 var searchData: List<WeatherData> = listOf(emptyWeather)
                 val task = kotlinx.coroutines.Runnable {
                     when (operator) {
                         R.id.radio_less -> {
                             operatorString = "<"
-                            Log.i("debug", "calling less than with $attribute and $value")
-                            //searchData = mDb!!.weatherDao().getSearchDataLessThan(attribute, value)
-                            showSearchResults(searchData, attribute, operatorString, value)
-
-
                         }
                         R.id.radio_equal -> {
                             operatorString = "="
-                            //   val task = kotlinx.coroutines.Runnable {
-                            Log.i("debug", "calling equal to with $attribute and $value")
-
-                            searchData = mDb!!.weatherDao().getSearchDataEqualTo(attribute, value)
-                            showSearchResults(searchData, attribute, operatorString, value)
-                            //        showSearchResults(searchData)
-
-
-                            // }
-                            //mDbWorkerThread.postTask(task)
                         }
                         R.id.radio_greater -> {
                             operatorString = ">"
-                            // val task = kotlinx.coroutines.Runnable {
-                            Log.i("debug", "calling greater than with $attribute and $value")
-                            searchData = mDb!!.weatherDao().getSearchDataGreaterThan(attribute, value)
-                            //searchData = mDb!!.weatherDao().getSingleHour("Bodhgaya, India", 2)
-
-                            showSearchResults(searchData, attribute, operatorString, value)
-                            //  showSearchResults(searchData)
-
-
-                            //  }
-                            // mDbWorkerThread.postTask(task)
-                            Log.i("debug", searchData.toString())
-
                         }
                         else -> {
                             searchData = listOf(emptyWeather)
                         }
                     }
-                    val query = SimpleSQLiteQuery("SELECT place_string, time, uid, hour, $attribute  FROM weatherData WHERE $attribute $operator $value")
+                    // create raw search query with parameters
+                    val query = SimpleSQLiteQuery(
+                            "SELECT place_string, time, uid, hour, $attribute FROM weatherData WHERE $attribute $operatorString $value")
+                    // do the search
                     searchData = mDb!!.weatherDao().getSearchQuery(query)
+                    // display results to the user
+                    showSearchResults(searchData, attribute, operatorString, value)
                 }
                 mDbWorkerThread.postTask(task)
-
-
-                //  } mDbWorkerThread.postTask(task)
             } else {
                 displayNoCheckedRadioOptionError()
             }
-
         } catch (e: IllegalStateException) {
             showInvalidInputError()
-
         }
-
     }
 
     fun checkRadioOptionSelected(): Boolean {
+        // return false if user hasn't selected any radio buttons
         val lessThan = this.findViewById<RadioButton>(R.id.radio_less)
         val equalTo = this.findViewById<RadioButton>(R.id.radio_equal)
         val greaterThan = this.findViewById<RadioButton>(R.id.radio_greater)
@@ -157,18 +119,17 @@ class SearchWeather : AppCompatActivity(), Callback, AdapterView.OnItemSelectedL
 
     fun displayNoCheckedRadioOptionError() {
         val builder = AlertDialog.Builder(this@SearchWeather)
-
         with(builder)
         {
             setTitle("Search Parameter Error")
             setMessage("Please select a value for 'less than', 'equal to' or 'greater than', and try again.")
-
             setPositiveButton("OK") { dialog, which -> null }
             show()
         }
     }
 
     fun getDatabaseAttribute(att: String): String {
+        // convert spinner value to database field name
         var str = ""
         when (att) {
             "Temperature" -> str = "temperature"
@@ -185,35 +146,30 @@ class SearchWeather : AppCompatActivity(), Callback, AdapterView.OnItemSelectedL
     }
 
     fun showSearchResults(data: List<WeatherData>, attribute: String, operator: String, value: Double) {
-
+        // display results to user
         if (data!!.isEmpty()) {
             this@SearchWeather.runOnUiThread(
-                    object : Runnable {
-                        override fun run() {
-                            showNoResultsError()
-                        }
+                object : Runnable {
+                    override fun run() {
+                        showNoResultsError()
                     }
+                }
             )
         } else {
             val builder = AlertDialog.Builder(this@SearchWeather)
-
+            var valueRounded = Math.round(value)
             with(builder)
             {
                 setTitle("Search Results")
                 val sb = StringBuilder()
-
                 sb.append(attribute + " " + operator + " " + value.toString() + ": \n\n")
                 var data = data.sortedBy { it.time }
-
+                // for each data result, add it to the output
                 for (d in data) {
-
                     var time = fb.getHourString(d.time!!)
-
-                    sb.append(d.placeString + ": " + time +  "\t" + d.temperature + "\n")
+                    sb.append(d.placeString + ": " + time + ": val:  " + valueRounded + "\n")
                 }
-
                 setMessage(sb.toString())
-
                 setPositiveButton("OK") { dialog, which -> null }
                 show()
                 //  Math.round(temp)
@@ -222,34 +178,27 @@ class SearchWeather : AppCompatActivity(), Callback, AdapterView.OnItemSelectedL
     }
 
     fun showNoResultsError() {
-
+        // display answer for no results returned
         val builder = AlertDialog.Builder(this@SearchWeather)
-
         with(builder)
         {
             setTitle("Search Results")
             val str = "No results found for your query!"
             setMessage(str)
-
             setPositiveButton("OK") { dialog, which -> null }
             show()
         }
     }
 
     fun showInvalidInputError() {
-
         val builder = AlertDialog.Builder(this@SearchWeather)
-
         with(builder)
         {
             setTitle("Search Error")
             val str = "Invalid input for your value - numbers accepted only."
             setMessage(str)
-
             setPositiveButton("OK") { dialog, which -> null }
             show()
         }
     }
-
-
 }

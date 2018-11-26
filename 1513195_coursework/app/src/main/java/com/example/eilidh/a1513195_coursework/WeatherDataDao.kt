@@ -28,16 +28,7 @@ interface WeatherDataDao {
     @Query("SELECT * FROM weatherData WHERE place_string = :place")
     fun getSinglePreferenceData(place: String): List<WeatherData>
 
-    @Query("SELECT * FROM weatherData WHERE :attribute = :value")
-    fun getSearchDataEqualTo(attribute: String, value: Double): List<WeatherData>
-
-    @Query("SELECT * FROM weatherData WHERE :attribute < :value")
-    fun getSearchDataLessThan(attribute: String, value: Double): List<WeatherData>
-
-    @Query("SELECT place_string, time, uid, hour, :attribute  FROM weatherData WHERE :attribute > :value")
-    fun getSearchDataGreaterThan(attribute: String, value: Double): List<WeatherData>
-
+    // Raw Query takes parameters of field, value and operator (< / > / =)
     @RawQuery
     fun getSearchQuery(query: SupportSQLiteQuery): List<WeatherData>
-
 }
