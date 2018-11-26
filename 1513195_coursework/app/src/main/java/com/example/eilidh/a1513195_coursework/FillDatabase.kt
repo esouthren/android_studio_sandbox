@@ -21,7 +21,6 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
     private var prefs = prefs
     private var activity = activity
 
-
     fun addDataToDatabase(data: ApiData.CoreData, context: Context, address: String) {
         Log.i("debug", "4) adddataToDatabase")
         var hourCount = 0
@@ -94,6 +93,7 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
     }
 
     fun getPreferenceWeather(address: String, context: Context) {
+        Log.i("debug", "displaying weather for: $address")
         val task = Runnable {
             var currentWeather = mDb?.weatherDao()?.getSinglePreferenceData(address)
             if (currentWeather!!.isEmpty()) {
@@ -181,7 +181,7 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
 
     fun setHourlyScrollViewContents(data: List<WeatherData>) {
         val scrollView = activity.findViewById<LinearLayout>(R.id.hourly_linearView)
-        for (i in 1..23) {
+        for (i in 1..data.size-1) {
             val hourSlot: LinearLayout = LinearLayout(activity)
             hourSlot.setOrientation(LinearLayout.VERTICAL)
             val hourSlotParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT)

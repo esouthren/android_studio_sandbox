@@ -67,7 +67,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_move_preferences_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -86,20 +86,20 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="20dp"
+        android:background="@drawable/main_screen_buttons"
         android:onClick="updateWeatherData"
+        android:padding="10dp"
         android:text="@string/str_update_api"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button4"
-        app:layout_constraintStart_toEndOf="@+id/button"
-        tools:text="@string/str_update_api"
-        android:background="@drawable/main_screen_buttons"
-        android:padding="10dp"/>
+        app:layout_constraintEnd_toStartOf="@+id/btn_move_preference_right"
+        app:layout_constraintStart_toEndOf="@+id/btn_move_preferences_left"
+        tools:text="@string/str_update_api" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/btn_move_preference_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/main_screen_buttons"
         android:onClick="changePreferenceViewRight"
@@ -176,13 +176,16 @@
         android:layout_width="368dp"
         android:layout_height="98dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@color/themeAccentBlue"
         android:padding="4dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/preference_summary"
+        app:layout_constraintVertical_bias="0.979">
 
         <LinearLayout
             android:id="@+id/hourly_linearView"

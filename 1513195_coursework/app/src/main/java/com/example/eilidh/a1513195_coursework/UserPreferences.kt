@@ -35,6 +35,8 @@ class UserPreferences (context: Context)  {
 
     fun getCurrentPrefView(): Int {
         val v = this.preferences.getString(CURRENT_PREF_VIEW, "")
+        Log.i("debug", "currentp pref view: " + v + ": " + getPrefAddress(v.toInt()))
+
         if(v.equals("")) { return 0 }
             else {
                 return v.toInt()
@@ -51,7 +53,8 @@ class UserPreferences (context: Context)  {
 
     fun setCurrentPrefView(index: Int) {
         val v = index.toString()
-        this.preferences.edit().putString(CURRENT_PREF_VIEW, v)
+        Log.i("debug", "setting v: $v")
+        this.preferences.edit().putString(CURRENT_PREF_VIEW, v).apply()
     }
 
     fun getNumberOfPreferences(): Int {
@@ -72,7 +75,6 @@ class UserPreferences (context: Context)  {
         }
         // add 'preferences cleared' toast?
     }
-
 
     fun displayNoPreferencesError(view: View) {
         // display error message that user is not online
