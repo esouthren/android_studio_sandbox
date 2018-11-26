@@ -88,6 +88,7 @@
     <string name="search_radio_equal">Equal To</string>
     <string name="search_radio_greater_than">Greater Than</string>
     <string name="seach_page_button">Search</string>
+    <string name="search_value_string">Value</string>
 
     <string-array name="search_weather_array">
         <item>Temperature</item>

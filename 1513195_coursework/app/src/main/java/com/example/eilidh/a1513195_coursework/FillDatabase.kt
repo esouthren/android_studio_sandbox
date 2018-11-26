@@ -17,8 +17,6 @@ import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import org.json.JSONObject
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 
 class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs: UserPreferences, activity: Activity, context: Context) {
@@ -312,6 +310,11 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
             return e.toString()
         }
     }
+
+    fun searchDataLessThan(attribute: String, value: Float) {
+        mDb!!.weatherDao().getSearchDataLessThan(attribute, value)
+    }
+
 
 
 }

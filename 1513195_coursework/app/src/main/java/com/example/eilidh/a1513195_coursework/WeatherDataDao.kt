@@ -22,4 +22,14 @@ interface WeatherDataDao {
 
     @Query("SELECT * FROM weatherData WHERE place_string = :place")
     fun getSinglePreferenceData(place: String): List<WeatherData>
+
+    @Query("SELECT * FROM weatherData WHERE :attribute = :value")
+    fun getSearchDataEqualTo(attribute: String, value: Float): List<WeatherData>
+
+    @Query("SELECT * FROM weatherData WHERE :attribute < :value")
+    fun getSearchDataLessThan(attribute: String, value: Float): List<WeatherData>
+
+    @Query("SELECT * FROM weatherData WHERE :attribute > :value")
+    fun getSearchDataGreaterThan(attribute: String, value: Float): List<WeatherData>
+
 }

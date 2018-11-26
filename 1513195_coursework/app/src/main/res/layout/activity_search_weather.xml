@@ -7,6 +7,7 @@
     tools:context=".SearchWeather"
     android:background="@color/themeBlue">
 
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="fill_parent"
@@ -17,6 +18,120 @@
         app:layout_constraintTop_toTopOf="parent">
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutbottom"
+        android:layout_width="fill_parent"
+        android:layout_height="84dp"
+        android:background="@color/themeLightBlue"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="28dp">
+
+    </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/search_activity_title"
+            android:textColor="@android:color/background_dark"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+            app:layout_constraintStart_toStartOf="@+id/linearLayout"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/search_sort_by"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toStartOf="@+id/search_spinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <Spinner
+        android:id="@+id/search_spinner"
+        android:layout_width="195dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/preferences_text_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+
+    <RadioGroup
+        android:id="@+id/RGroup"
+        android:layout_width="228dp"
+        android:layout_height="162dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_spinner">
+
+        <RadioButton
+            android:id="@+id/radio_less"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="@string/search_less_than"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="16dp" />
+
+        <RadioButton
+            android:id="@+id/radio_equal"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="@string/search_radio_equal"
+            android:textSize="24sp"
+            app:layout_constraintStart_toEndOf="@+id/radio_less"
+            tools:layout_editor_absoluteY="16dp" />
+
+        <RadioButton
+            android:id="@+id/radio_greater"
+            android:layout_width="213dp"
+            android:layout_height="50dp"
+            android:text="@string/search_radio_greater_than"
+            android:textSize="24sp"
+            app:layout_constraintStart_toEndOf="@+id/radio_equal"
+            tools:layout_editor_absoluteY="16dp" />
+
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/search_value"
+        android:layout_width="77dp"
+        android:layout_height="73dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toStartOf="@+id/search_units"
+        app:layout_constraintTop_toBottomOf="@+id/RGroup" />
+
+    <TextView
+        android:id="@+id/search_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="20dp"
+        android:text="TextView"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/RGroup" />
+
 
     <TextView
         android:id="@+id/textView"
@@ -33,100 +148,34 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="30dp"
-        android:text="@string/search_sort_by"
-        android:textSize="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-    <Spinner
-        android:id="@+id/search_spinner"
-        android:layout_width="221dp"
-        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.208"
-        app:layout_constraintStart_toEndOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-
-    <RadioGroup
-        android:id="@+id/RGroup"
-        android:layout_width="174dp"
-        android:layout_height="111dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:text="@string/search_value_string"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toStartOf="@+id/editText"
+        app:layout_constraintHorizontal_bias="0.36"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4">
+        app:layout_constraintTop_toBottomOf="@+id/RGroup"
+        tools:text="@string/search_value_string" />
 
-        <RadioButton
-            android:id="@+id/radio_less"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/search_less_than"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="16dp" />
-
-        <RadioButton
-            android:id="@+id/radio_greater"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
-            android:text="@string/search_radio_greater_than"
-            app:layout_constraintStart_toEndOf="@+id/radio_equal"
-            tools:layout_editor_absoluteY="16dp" />
-
-        <RadioButton
-            android:id="@+id/radio_equal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
-            android:text="@string/search_radio_equal"
-            app:layout_constraintStart_toEndOf="@+id/radio_less"
-            tools:layout_editor_absoluteY="16dp" />
-    </RadioGroup>
-
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="77dp"
-        android:layout_height="73dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Val"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toStartOf="@+id/search_units"
-        app:layout_constraintStart_toEndOf="@+id/RGroup"
-        app:layout_constraintTop_toBottomOf="@+id/search_spinner" />
-
-    <TextView
-        android:id="@+id/search_units"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="TextView"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="173dp" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_search"
         android:layout_width="361dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/main_screen_buttons"
+        android:onClick="displaySearchResults"
         android:text="@string/seach_page_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/RGroup" />
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutbottom"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

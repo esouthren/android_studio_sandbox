@@ -102,7 +102,6 @@ class MainActivity : AppCompatActivity() {
     fun openSearch(view: View) {
         // open search feature
         val intent = Intent(this, SearchWeather::class.java).apply {
-
         }
         startActivity(intent)
     }
