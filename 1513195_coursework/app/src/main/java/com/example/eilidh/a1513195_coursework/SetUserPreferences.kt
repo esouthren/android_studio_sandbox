@@ -3,13 +3,9 @@ package com.example.eilidh.a1513195_coursework
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-
 import android.util.Log
 import android.widget.EditText
 import javax.security.auth.callback.Callback
-
-
-//todo: add delete icon to each option choice
 
 
 class SetUserPreferences : AppCompatActivity(), Callback {
@@ -83,12 +79,6 @@ class SetUserPreferences : AppCompatActivity(), Callback {
         else {
             onlineChecker.displayOfflineError(view)
         }
-
-        //
-    }
-
-    fun deletePreference() {
-        // update the order of preferences if , say, 2nd preference of 3 is deleted
     }
 
     fun addPreferenceEditBox(view: View) {
@@ -96,11 +86,11 @@ class SetUserPreferences : AppCompatActivity(), Callback {
         //updatePreferences(view)
         for (i in 0..9) {
             val editText: EditText = findViewById<EditText>(editTextIds[i])
-                if (editText.text.toString().length <= 1) {
-                    editText.visibility = View.VISIBLE
-                    break
-                }
+            if (editText.text.toString().length <= 1) {
+                editText.visibility = View.VISIBLE
+                break
             }
+        }
     }
 
     fun deleteAllPreferences(view: View) {
@@ -115,7 +105,8 @@ class SetUserPreferences : AppCompatActivity(), Callback {
             fb.clearDatabase()
             fb.displayDbData(this@SetUserPreferences)
             displayUserPreferences()
-        } else {
+        }
+        else {
             onlineChecker.displayOfflineError(view)
         }
     }

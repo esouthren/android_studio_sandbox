@@ -42,32 +42,22 @@ class GeocodingLocation(activity: Activity) {
                         prefs.setPrefLatLong(prefIndex, result)
                         Log.i("debug", "setting new latlong: " + prefIndex + " \t" + prefs!!.getPrefLatLong(prefIndex))
 
-                    } else {
-                       
-
                     }
-
                 }
             }
         }
         thread.start()
     }
 
-    fun invalidAddressAlert(view: View, address: String){
+    fun invalidAddressAlert(view: View, address: String) {
 
         val builder = AlertDialog.Builder(view.context)
-
         with(builder)
         {
             setTitle("Oh no!")
             setMessage("We couldn't process your address: " + address + "\nPlease try again with a different address.")
-
-            setPositiveButton("OK"){ dialog,which -> null }
-            //setNegativeButton(android.R.string.no, negativeButtonClick)
-            //setNeutralButton("Maybe", neutralButtonClick)
+            setPositiveButton("OK") { dialog, which -> null }
             show()
         }
-
-
     }
 }

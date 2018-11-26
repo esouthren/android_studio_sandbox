@@ -3,17 +3,21 @@ package com.example.eilidh.a1513195_coursework
 import android.content.Context
 import android.content.SharedPreferences
 import android.support.v7.app.AlertDialog
-import android.util.Log
 import android.view.View
 
 class UserPreferences (context: Context)  {
+
+    /*
+    Created and accessing user preferences for locations
+     */
+
     val PREFS_FILENAME = "user_preferences"
     // array of 0 - 9 to store user preferences
     val PREFERENCES = Array(10, { i -> (i + 1).toString() })
     // stores preferences' lat/long
     val PREFERENCES_LAT_LONG = Array(10, { i -> ((i + 1).toString()+"_LATLONG") })
 
-    val CURRENT_PREF_VIEW = "CURRENT_PREFERENCE_DISPLAY" // which preference is the default display?
+    val CURRENT_PREF_VIEW = "CURRENT_PREFERENCE_DISPLAY" // which preference is on display?
 
     val preferences: SharedPreferences = context.getSharedPreferences(PREFS_FILENAME, 0);
 
@@ -35,7 +39,6 @@ class UserPreferences (context: Context)  {
 
     fun getCurrentPrefView(): Int {
         val v = this.preferences.getString(CURRENT_PREF_VIEW, "")
-
         if(v.equals("")) { return 0 }
             else {
                 return v.toInt()
@@ -70,7 +73,6 @@ class UserPreferences (context: Context)  {
             this.preferences.edit().putString(PREFERENCES[i], " ").apply()
             this.preferences.edit().putString(PREFERENCES_LAT_LONG[i], " ").apply()
         }
-        // add 'preferences cleared' toast?
     }
 
     fun displayNoPreferencesError(view: View) {
@@ -84,7 +86,6 @@ class UserPreferences (context: Context)  {
                     "\n\nOpen the Settings screen to add some preferences.")
 
             setPositiveButton("OK") { dialog, which -> null }
-
             show()
         }
     }

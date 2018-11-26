@@ -5,21 +5,10 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
-import kotlinx.coroutines.*
 
-import com.google.gson.Gson
-
-
-import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
-    val TAG = "debug"
-    val APIKEY = "bd233fef7ea7953a843bbbb58fc087ba"
     var prefs: UserPreferences? = null
     private lateinit var mDbWorkerThread: DbWorkerThread
     var onlineChecker: OnlineChecker = OnlineChecker()
@@ -34,15 +23,12 @@ class MainActivity : AppCompatActivity() {
         prefs = UserPreferences(this)
         mDbWorkerThread = DbWorkerThread("dbWorkerThread")
         mDbWorkerThread.start()
-        //onlineChecker = OnlineChecker()
-
 
         mDb = WeatherDatabase.getInstance(this)
         fb = FillDatabase(mDb!!, mDbWorkerThread, prefs!!, this@MainActivity, applicationContext)
 
         fb.displayDbData(this@MainActivity)
         prefs!!.setCurrentPrefView(0)
-        Log.i("debug", "current pref view: " + prefs!!.getCurrentPrefView())
     }
 
     fun changePreferenceViewLeft(view: View) {
@@ -56,7 +42,6 @@ class MainActivity : AppCompatActivity() {
     fun updateWeatherData(view: View) {
         fb.updateWeatherData(view)
     }
-
 
     fun changePreferenceView(direction: String) {
         // move the view to another user preference
@@ -89,9 +74,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
-
-
     fun openPreferences(view: View) {
         // open user preferences activity
         val intent = Intent(this, SetUserPreferences::class.java).apply {
@@ -105,6 +87,4 @@ class MainActivity : AppCompatActivity() {
         }
         startActivity(intent)
     }
-
-
 }

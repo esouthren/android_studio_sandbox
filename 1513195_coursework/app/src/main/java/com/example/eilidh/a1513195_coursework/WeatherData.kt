@@ -4,6 +4,13 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 
+/*
+Database structure for weather data.
+
+Data is returned in 24-hour segments. Each entry includes the placename,
+the hour of the data, and the data within that hour.
+
+ */
 
 @Entity(tableName = "weatherData")
 data class WeatherData(@PrimaryKey(autoGenerate = true) var uid: Int,
@@ -26,11 +33,10 @@ data class WeatherData(@PrimaryKey(autoGenerate = true) var uid: Int,
                        @ColumnInfo(name = "uvIndex") var uvIndex: Double?,
                        @ColumnInfo(name = "visibility") var visibility: Double?)
 
-
                 {
                 constructor():this(0,"",0.0,0.0,0,
                         "","","",0.0, 0.0,
                         "", 0.0, 0.0, 0.0,
                         0.0,0.0,0.0,0.0,0.0)
                 }
-// each database entry is city + time
+

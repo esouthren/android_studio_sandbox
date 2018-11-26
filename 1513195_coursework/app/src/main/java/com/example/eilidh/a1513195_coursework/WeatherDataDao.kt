@@ -6,8 +6,9 @@ import android.arch.persistence.room.Query
 import android.arch.persistence.room.RawQuery
 import android.arch.persistence.db.SupportSQLiteQuery
 
-
-
+/*
+Queries to interact with the weather database
+ */
 
 @Dao
 interface WeatherDataDao {

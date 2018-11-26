@@ -4,7 +4,6 @@ import android.arch.persistence.db.SimpleSQLiteQuery
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.util.Log
 import android.view.View
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_search_weather.*
@@ -12,6 +11,10 @@ import javax.security.auth.callback.Callback
 import java.lang.IllegalStateException
 
 class SearchWeather : AppCompatActivity(), Callback, AdapterView.OnItemSelectedListener  {
+
+    /*
+    Functions for the 'Search Weather' activity - returning custom data from the weather database.
+     */
 
     lateinit var fb: FillDatabase
     private var mDb: WeatherDatabase? = null
@@ -21,7 +24,6 @@ class SearchWeather : AppCompatActivity(), Callback, AdapterView.OnItemSelectedL
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        Log.i("debug", "Opening Search Weather Activity")
         prefs = UserPreferences(this)
         mDb = WeatherDatabase.getInstance(this)
         mDbWorkerThread = DbWorkerThread("dbWorkerThreadSearch")
@@ -157,7 +159,6 @@ class SearchWeather : AppCompatActivity(), Callback, AdapterView.OnItemSelectedL
             )
         } else {
             val builder = AlertDialog.Builder(this@SearchWeather)
-            var valueRounded = Math.round(value)
             with(builder)
             {
                 setTitle("Search Results")
@@ -167,7 +168,7 @@ class SearchWeather : AppCompatActivity(), Callback, AdapterView.OnItemSelectedL
                 // for each data result, add it to the output
                 for (d in data) {
                     var time = fb.getHourString(d.time!!)
-                    sb.append(d.placeString + ": " + time + ": val:  " + valueRounded + "\n")
+                    sb.append(d.placeString + ": time: " + time + "\n")
                 }
                 setMessage(sb.toString())
                 setPositiveButton("OK") { dialog, which -> null }

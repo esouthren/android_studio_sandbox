@@ -2,6 +2,10 @@ package com.example.eilidh.a1513195_coursework
 
 class ApiData {
 
+    /*
+    Class to store data parsed from API Calls
+     */
+
     // all data is metric/celcius
 
     data class CoreData(

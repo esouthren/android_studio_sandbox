@@ -21,6 +21,10 @@ import java.text.SimpleDateFormat
 
 class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs: UserPreferences, activity: Activity, context: Context) {
 
+    /*
+    Functions to control and access the database
+     */
+
     val TAG = "debug"
     val APIKEY = "bd233fef7ea7953a843bbbb58fc087ba"
     private var mDbWorkerThread = mDbWorkerThread
@@ -69,7 +73,6 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
         val flag = "?"
         val delim = ","
         // api gets called here
-        //Log.i(TAG, "API being called!")
         val queue = Volley.newRequestQueue(context)
         val url = "$web$slash$APIKEY$slash$lat$delim$long$delim$time$flag$excludes"
         Log.i(TAG, url)
@@ -80,11 +83,8 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
                     parseJsonDataToApiData(response, address)
                 },
                 Response.ErrorListener { Log.i(TAG, "API Fail :( ") })
-
         queue.add(jsonObjectRequest)
-
     }
-
 
     fun parseJsonDataToApiData(data: JSONObject, address: String) {
         Log.i("debug", "3) parseJsonDataToApiData")
@@ -135,13 +135,6 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
             displayDbData(context)
         }
         mDbWorkerThread.postTask(task)
-    }
-
-    fun isConnectedToInternet(context: Context): Boolean {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        var activeNetworkInfo: NetworkInfo? = null
-        activeNetworkInfo = cm.activeNetworkInfo
-        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting
     }
 
     fun clearDatabase() {
@@ -242,13 +235,11 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
     }
 
     fun displayEmptyDatabaseScreen() {
-        Log.i("debug", "empty database screen")
         // hide windows and add a text box saying 'no data stored'
         activity.findViewById<TextView>(R.id.preference_title).setText("")
         activity.findViewById<TextView>(R.id.preference_summary).setText("No Data to Display")
         activity.findViewById<TextView>(R.id.preference_temp).setText("")
         activity.findViewById<TextView>(R.id.preference_chance_rain).setText("")
-
     }
 
 
@@ -277,12 +268,11 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
 
             val iconLayout = RelativeLayout(activity)
             val iconLayoutParams = LinearLayout.LayoutParams(100, 100, 1f)
-            iconLayout.setLayoutParams(iconLayoutParams)
+            iconLayout.layoutParams = iconLayoutParams
             val icon = ImageView(activity)
 
             icon.setImageResource(getIcon(data.get(i).icon!!))
             iconLayout.addView(icon)
-
 
             val tempLayout = RelativeLayout(activity)
             val tempLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
@@ -310,11 +300,4 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
             return e.toString()
         }
     }
-
-    fun searchDataLessThan(attribute: String, value: Double) {
-        mDb!!.weatherDao().getSearchDataLessThan(attribute, value)
-    }
-
-
-
 }

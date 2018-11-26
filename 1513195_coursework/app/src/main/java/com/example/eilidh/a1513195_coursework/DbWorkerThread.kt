@@ -5,6 +5,10 @@ import android.os.HandlerThread
 
 class DbWorkerThread(threadName: String) : HandlerThread(threadName) {
 
+    /*
+    Thread handler for database interactions
+     */
+
     private lateinit var mWorkerHandler: Handler
 
     override fun onLooperPrepared() {
