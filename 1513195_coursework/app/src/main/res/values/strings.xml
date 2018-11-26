@@ -82,4 +82,19 @@
     <string name="move_preference_view_left"><![CDATA[<]]></string>
     <string name="move_preference_view_right"><![CDATA[>]]></string>
     <string name="search_activity_title">Search Weather</string>
+    <string name="search_sort_by">Sort By</string>
+    <string name="search_spinner_temperature">Temperature</string>
+    <string name="search_less_than">Less Than</string>
+    <string name="search_radio_equal">Equal To</string>
+    <string name="search_radio_greater_than">Greater Than</string>
+    <string name="seach_page_button">Search</string>
+
+    <string-array name="search_weather_array">
+        <item>Temperature</item>
+        <item>Humidity</item>
+        <item>Pressure</item>
+        <item>Windspeed</item>
+        <item>UV Index</item>
+        <item>Visibility</item>
+    </string-array>
 </resources>
