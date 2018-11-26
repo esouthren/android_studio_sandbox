@@ -55,19 +55,14 @@ class MainActivity : AppCompatActivity() {
 
 
     fun changePreferenceView(direction: String) {
-        //todo: this doesn't seem to work? maybe need to thread?
         // move the view to another user preference
         val numberOfFilledPreferences = prefs!!.getNumberOfPreferences()
-        Log.i("debug", "number of preferences: " + prefs!!.getNumberOfPreferences().toString())
-        Log.i("debug", "changing preferenceview to the: " + direction)
-        val currentPlace = prefs!!.getPrefAddress(prefs!!.getCurrentPrefView())
         val currentPrefView = prefs!!.getCurrentPrefView()
 
         // user clicks 'left' button
         if(direction.equals("left")) {
             if(currentPrefView>0) {
                     prefs!!.setCurrentPrefView((currentPrefView - 1))
-                    Log.i("debug", "new preference: " + prefs!!.getPrefAddress(prefs!!.getCurrentPrefView()))
             }
             else {
                 // circle around to the last user preference
@@ -78,7 +73,6 @@ class MainActivity : AppCompatActivity() {
             if (currentPrefView < numberOfFilledPreferences-1) {
                 val newPref = currentPrefView + 1
                 prefs!!.setCurrentPrefView(newPref)
-                Log.i("debug", "new preference: " + prefs!!.getPrefAddress(prefs!!.getCurrentPrefView()))
                 fb.getPreferenceWeather(prefs!!.getPrefAddress(currentPrefView), this@MainActivity)
 
             } else {
@@ -86,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                 prefs!!.setCurrentPrefView(0)
             }
         }
-
+        // finally, update screen to reflect new selection
         fb.getPreferenceWeather(prefs!!.getPrefAddress(currentPrefView), this@MainActivity)
 
     }

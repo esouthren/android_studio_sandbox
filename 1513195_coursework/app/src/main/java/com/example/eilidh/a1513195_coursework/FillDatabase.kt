@@ -22,7 +22,6 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
     private var activity = activity
 
     fun addDataToDatabase(data: ApiData.CoreData, context: Context, address: String) {
-        Log.i("debug", "4) adddataToDatabase")
         var hourCount = 0
 
         for (thisHour in data.hourly.data) {
@@ -53,7 +52,6 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
     }
 
     private fun insertWeatherDataInDb(weatherData: WeatherData, context: Context) {
-        Log.i("debug", "5) insertWeatherDataInDb")
         val task = Runnable {
             mDb?.weatherDao()?.insert(weatherData)
             displayDbData(context)
@@ -85,7 +83,6 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
         val userPreferences = prefs?.getNumberOfPreferences()
         if (userPreferences == 0) {
             // display popup error message
-            Log.i("debug", "no preferences!")
         } else {
             val currentPlace = prefs!!.getPrefAddress(prefs!!.getCurrentPrefView())
             getPreferenceWeather(currentPlace, context)
@@ -97,7 +94,6 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
         val task = Runnable {
             var currentWeather = mDb?.weatherDao()?.getSinglePreferenceData(address)
             if (currentWeather!!.isEmpty()) {
-                Log.i("debug", "getPreferenceWeather: no database data ")
                 activity.runOnUiThread(
                         object : Runnable {
                             override fun run() {
@@ -117,11 +113,9 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
                                 setPreferenceTemp(currentWeather.get(0).temperature!!)
                                 setPreferenceRainChance(currentWeather.get(0).precipProbability!!)
                                 setIcon(currentWeather.get(0).icon!!)
-
                             }
                         }
                 )
-
             }
 
         }
@@ -146,7 +140,6 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
     fun setPreferenceRainChance(chance: Double) {
         val edit = Math.round(chance * 10)
         activity.findViewById<TextView>(R.id.preference_chance_rain).setText("$edit%")
-
     }
 
     fun setIcon(weatherType: String) {
@@ -154,6 +147,7 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
     }
 
     fun getIcon(weatherType: String): Int {
+        // translate the data 'summary' to an appropriate weather icon
         when (weatherType) {
             "clear-day" -> return R.mipmap.sun
             "clear-night" -> return R.mipmap.sun
@@ -179,8 +173,14 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
 
     }
 
+
     fun setHourlyScrollViewContents(data: List<WeatherData>) {
+        Log.i("debug", "setting new hourly data for: " + data.get(0).placeString)
+
         val scrollView = activity.findViewById<LinearLayout>(R.id.hourly_linearView)
+        // clear previous data
+
+        scrollView.removeAllViews()
         for (i in 1..data.size-1) {
             val hourSlot: LinearLayout = LinearLayout(activity)
             hourSlot.setOrientation(LinearLayout.VERTICAL)

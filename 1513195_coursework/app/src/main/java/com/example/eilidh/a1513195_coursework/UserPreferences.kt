@@ -35,7 +35,6 @@ class UserPreferences (context: Context)  {
 
     fun getCurrentPrefView(): Int {
         val v = this.preferences.getString(CURRENT_PREF_VIEW, "")
-        Log.i("debug", "currentp pref view: " + v + ": " + getPrefAddress(v.toInt()))
 
         if(v.equals("")) { return 0 }
             else {
@@ -44,7 +43,6 @@ class UserPreferences (context: Context)  {
         }
 
     fun hasPreferences(): Boolean {
-        Log.i("debug", "number of preferences: " + getNumberOfPreferences())
         if(getNumberOfPreferences() == 0) {
             return false
         }
@@ -53,7 +51,6 @@ class UserPreferences (context: Context)  {
 
     fun setCurrentPrefView(index: Int) {
         val v = index.toString()
-        Log.i("debug", "setting v: $v")
         this.preferences.edit().putString(CURRENT_PREF_VIEW, v).apply()
     }
 
