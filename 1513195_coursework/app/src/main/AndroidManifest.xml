@@ -12,21 +12,26 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/sun"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.Launcher">
+        android:theme="@style/AppTheme.Launcher"
+        >
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.Launcher">
+            android:theme="@style/AppTheme.Launcher"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".SetUserPreferences"
-            android:label="@string/title_activity_user_preferences" />
-        <activity android:name=".SearchWeather"></activity>
+            android:label="@string/title_activity_user_preferences"
+            android:screenOrientation="portrait"/>
+        <activity 
+            android:name=".SearchWeather"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>
