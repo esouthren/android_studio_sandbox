@@ -28,7 +28,7 @@
             android:name=".SetUserPreferences"
             android:label="@string/title_activity_user_preferences"
             android:screenOrientation="portrait"/>
-        <activity 
+        <activity
             android:name=".SearchWeather"
             android:screenOrientation="portrait">
         </activity>

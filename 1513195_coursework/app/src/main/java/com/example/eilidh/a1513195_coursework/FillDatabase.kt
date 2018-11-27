@@ -2,8 +2,6 @@ package com.example.eilidh.a1513195_coursework
 
 import android.app.Activity
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -136,6 +134,7 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
     }
 
     fun clearDatabase() {
+        Log.i("debug", "deleting database data")
         val task = Runnable { mDb?.weatherDao()?.deleteAll() }
         mDbWorkerThread.postTask(task)
     }
@@ -237,6 +236,7 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
         activity.findViewById<TextView>(R.id.preference_summary).setText("No Data to Display")
         activity.findViewById<TextView>(R.id.preference_temp).setText("")
         activity.findViewById<TextView>(R.id.preference_chance_rain).setText("")
+        activity.findViewById<LinearLayout>(R.id.hourly_linearView).removeAllViews()
     }
 
     fun setHourlyScrollViewContents(data: List<WeatherData>) {
