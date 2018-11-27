@@ -68,7 +68,7 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
         Log.i("debug", "2) CallApi()")
         val web = "https://api.darksky.net/forecast"
         val excludes = "exclude=minutely,alerts,flags" // things to remove from the api call
-        val time = "2018-11-15T12:30:00Z"
+        val time = getCurrentTime()
         val slash = "/"
         val flag = "?"
         val delim = ","
@@ -79,7 +79,6 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
         val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
                 Response.Listener { response ->
                     val text = response
-                    Log.i(TAG, text.toString())
                     parseJsonDataToApiData(response, address)
                 },
                 Response.ErrorListener { Log.i(TAG, "API Fail :( ") })
@@ -88,15 +87,14 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
 
     fun parseJsonDataToApiData(data: JSONObject, address: String) {
         Log.i("debug", "3) parseJsonDataToApiData")
-        // textView.text = data["temperature"].toString()
-        // textView.text = data["temperature"].toString()
         var gson = Gson()
-        //Log.i("debug", data.toString())
-        // fill an ApiData object with Json data
         var parsedApiData = gson.fromJson(data.toString(), ApiData.CoreData::class.java)
-
         addDataToDatabase(parsedApiData, context, address)
+    }
 
+    fun getCurrentTime(): String {
+        val tsLong = System.currentTimeMillis() / 1000
+        return tsLong.toString()
     }
 
     fun addDataToDatabase(data: ApiData.CoreData, context: Context, address: String) {
@@ -161,7 +159,6 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
     }
 
     fun getPreferenceWeather(address: String, context: Context) {
-        Log.i("debug", "displaying weather for: $address")
         val task = Runnable {
             var currentWeather = mDb?.weatherDao()?.getSinglePreferenceData(address)
             if (currentWeather!!.isEmpty()) {
@@ -242,10 +239,7 @@ class FillDatabase(mDb: WeatherDatabase, mDbWorkerThread: DbWorkerThread, prefs:
         activity.findViewById<TextView>(R.id.preference_chance_rain).setText("")
     }
 
-
     fun setHourlyScrollViewContents(data: List<WeatherData>) {
-        Log.i("debug", "setting new hourly data for: " + data.get(0).placeString)
-
         val scrollView = activity.findViewById<LinearLayout>(R.id.hourly_linearView)
         // clear previous data
 
